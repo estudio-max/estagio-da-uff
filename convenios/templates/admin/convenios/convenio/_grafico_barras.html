@@ -1,0 +1,14 @@
+{# Barras horizontais de uma série (rótulos longos). Variáveis: barras, titulo, descricao, id, unidade. #}
+<section class="grafico module" aria-labelledby="{{ id }}-titulo">
+  <h2 id="{{ id }}-titulo">{{ titulo }}</h2>
+  {% if descricao %}<p class="grafico-descricao">{{ descricao }}</p>{% endif %}
+  <ul class="barras">
+    {% for b in barras %}
+      <li tabindex="0" title="{{ b.rotulo }}: {{ b.valor }} {{ unidade }}">
+        <span class="rotulo">{{ b.rotulo }}</span>
+        <span class="trilho"><span class="marca{% if not b.destaque %} recessiva{% endif %}" style="width: {{ b.pct|stringformat:'.1f' }}%"></span></span>
+        <span class="valor">{{ b.valor }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
