@@ -5,8 +5,8 @@
 
 {% block estilo %}
 <style>
-  .cartao { background: var(--superficie); border: 1px solid var(--borda); border-radius: 8px; padding: 24px; }
-  .cartao h2 { margin: 0 0 4px; font-size: 1.3rem; }
+  .cartao { background: var(--superficie); border-radius: var(--raio); box-shadow: var(--sombra); padding: 28px; }
+  .cartao h2 { margin: 0 0 6px; font-size: 1.3rem; font-weight: 500; color: var(--texto-forte); }
   dl { display: grid; grid-template-columns: 220px 1fr; gap: 10px 16px; margin: 20px 0 0; }
   dt { color: var(--suave); font-weight: 600; }
   dd { margin: 0; }

@@ -119,6 +119,7 @@ erDiagram
 | A10 | Alertas por comando de gerenciamento agendado no cron do servidor, sem fila nem Celery: 1 execução por dia basta para ~2.000 convênios | Decidida em 06/10/2026 |
 | A11 | Importação pelo XML do Drupal com `id_drupal` como chave (reimportar atualiza); um savepoint por registro, para um erro não derrubar a carga | Decidida em 07/10/2026 |
 | A12 | Documento público passa por um único filtro (`documento_publico`): CNPJ formatado, CPF omitido (RN08) | Decidida em 07/10/2026 |
+| A13 | Tema único claro, inspirado no visual do Cuba (paleta, cartões, fonte Rubik) com CSS próprio em `core/static/core/tema.css`, usado pelo admin (`templates/admin/base_site.html`) e pela página pública; sem modo escuro. A fonte vem do Google Fonts: em produção, hospedar o arquivo na UFF evita enviar o IP do visitante ao Google | Decidida em 07/10/2026 |
 | A6 | Ferramentas: uv, ruff, mypy strict, vulture, pip-audit, pytest-django; pipeline único em `tools/ci.py` | Decidida |
 | A4 | SEI permanece processo oficial; sistema guarda nº do processo | Provisória — D1 |
 | A5 | Status de vigência derivado de datas | Proposta |

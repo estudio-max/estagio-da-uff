@@ -1,0 +1,118 @@
+/* Tema claro do sistema, inspirado no visual do Cuba (paleta e formas; CSS próprio).
+   Usado pelo admin (templates/admin/base_site.html) e pela página pública. */
+
+:root {
+  --cor-principal: #7366ff;
+  --cor-principal-escura: #5b4fe0;
+  --cor-principal-clara: #f1f0ff;
+  --fundo: #f7f8f9;
+  --superficie: #ffffff;
+  --texto: #404040;
+  --texto-forte: #222222;
+  --suave: #52526c;
+  --borda: rgba(82, 82, 108, 0.12);
+  --sombra: 0 9px 20px rgba(46, 35, 94, 0.07);
+  --raio: 15px;
+  --raio-pequeno: 6px;
+  --fonte: "Rubik", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+
+  /* Variáveis do admin do Django mapeadas para a paleta */
+  --primary: var(--cor-principal);
+  --secondary: var(--cor-principal);
+  --accent: var(--cor-principal);
+  --primary-fg: #fff;
+  --body-fg: var(--texto);
+  --body-bg: var(--fundo);
+  --body-quiet-color: var(--suave);
+  --body-medium-color: var(--texto);
+  --body-loud-color: var(--texto-forte);
+  --header-color: var(--texto);
+  --header-branding-color: var(--cor-principal);
+  --header-bg: var(--superficie);
+  --header-link-color: var(--suave);
+  --breadcrumbs-fg: var(--suave);
+  --breadcrumbs-link-fg: var(--cor-principal);
+  --breadcrumbs-bg: var(--fundo);
+  --link-fg: var(--cor-principal);
+  --link-hover-color: var(--cor-principal-escura);
+  --link-selected-fg: var(--cor-principal-escura);
+  --hairline-color: var(--borda);
+  --border-color: #dfe0e6;
+  --darkened-bg: #fafafc;
+  --selected-bg: var(--cor-principal-clara);
+  --selected-row: var(--cor-principal-clara);
+  --button-bg: var(--cor-principal);
+  --button-hover-bg: var(--cor-principal-escura);
+  --default-button-bg: var(--cor-principal-escura);
+  --default-button-hover-bg: var(--cor-principal);
+  --object-tools-bg: var(--cor-principal);
+  --object-tools-hover-bg: var(--cor-principal-escura);
+  --font-family-primary: var(--fonte);
+}
+
+/* ---------- Admin ---------- */
+
+body { background: var(--fundo); font-family: var(--fonte); }
+.theme-toggle { display: none; } /* só tema claro */
+
+#header {
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+  padding-block: 14px;
+}
+#site-name a { color: var(--cor-principal); font-weight: 600; }
+#user-tools { color: var(--suave); text-transform: none; letter-spacing: 0; font-size: .875rem; }
+#user-tools a { border-bottom-color: transparent; }
+
+div.breadcrumbs { background: transparent; color: var(--suave); padding-block: 16px; }
+div.breadcrumbs a { color: var(--cor-principal); }
+
+#content h1 { color: var(--texto-forte); font-weight: 500; }
+
+.module, #changelist .changelist-form-container, #changelist-filter, fieldset.module,
+.inline-group, .dashboard .module {
+  background: var(--superficie);
+  border: 0;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+.module h2, .module caption, .inline-group h2 {
+  background: var(--superficie);
+  color: var(--texto-forte);
+  font-weight: 500;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--borda);
+}
+thead th, tfoot td, .module table th[scope="col"] {
+  background: var(--darkened-bg);
+  color: var(--suave);
+  font-weight: 500;
+}
+tr:hover td { background: #fbfbfe; }
+
+#nav-sidebar { background: var(--superficie); border-right: 1px solid var(--borda); }
+#nav-sidebar .current-model { background: var(--cor-principal-clara); }
+
+input[type="text"], input[type="password"], input[type="email"], input[type="url"],
+input[type="number"], input[type="search"], textarea, select, .vTextField {
+  border-radius: var(--raio-pequeno);
+  border: 1px solid var(--border-color);
+}
+input:focus, textarea:focus, select:focus { border-color: var(--cor-principal); outline: 2px solid var(--cor-principal-clara); }
+
+.button, input[type="submit"], input[type="button"], .submit-row input, a.button,
+.object-tools a {
+  border-radius: var(--raio-pequeno);
+}
+.object-tools a { border-radius: var(--raio-pequeno); text-transform: none; letter-spacing: 0; }
+
+#changelist-filter h2 { background: var(--superficie); color: var(--texto-forte); text-transform: none; }
+#changelist-filter li.selected a { color: var(--cor-principal); }
+
+.login #container { border-radius: var(--raio); box-shadow: var(--sombra); border: 0; overflow: hidden; }
+.login #header { box-shadow: none; }
