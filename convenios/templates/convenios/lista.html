@@ -1,0 +1,104 @@
+{% extends "convenios/base.html" %}
+{% load convenios_publicos %}
+
+{% block estilo %}
+<style>
+  .busca { display: grid; grid-template-columns: 1fr 220px 110px auto; gap: 12px; align-items: end;
+    background: var(--superficie); border: 1px solid var(--borda); border-radius: 8px; padding: 16px; }
+  .busca label { display: block; font-size: .875rem; font-weight: 600; margin-bottom: 4px; }
+  .busca input, .busca select, .busca button { width: 100%; font: inherit; padding: 8px 10px;
+    border: 1px solid var(--borda); border-radius: 6px; background: var(--superficie); color: var(--texto); }
+  .busca button { background: var(--marca); color: var(--marca-texto); border-color: var(--marca);
+    font-weight: 600; cursor: pointer; }
+  .resumo { color: var(--suave); margin: 20px 0 8px; }
+  table { width: 100%; border-collapse: collapse; background: var(--superficie);
+    border: 1px solid var(--borda); border-radius: 8px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borda); vertical-align: top; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; color: var(--suave); background: var(--destaque); }
+  td small { color: var(--suave); display: block; }
+  .vazio { background: var(--superficie); border: 1px dashed var(--borda); border-radius: 8px; padding: 32px; text-align: center; }
+  .paginas { display: flex; gap: 16px; justify-content: center; align-items: center; margin-top: 20px; }
+  @media (max-width: 760px) {
+    .busca { grid-template-columns: 1fr 1fr; }
+    .busca .campo-busca, .busca button { grid-column: 1 / -1; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; }
+    tr { border-bottom: 1px solid var(--borda); padding: 8px 0; }
+    td { border: 0; padding: 4px 12px; }
+    td[data-rotulo]::before { content: attr(data-rotulo) ": "; font-weight: 600; color: var(--suave); }
+  }
+</style>
+{% endblock %}
+
+{% block conteudo %}
+<form class="busca" method="get" role="search" aria-label="Buscar convênios">
+  <div class="campo-busca">
+    <label for="q">Empresa, CNPJ ou nº do convênio</label>
+    <input id="q" name="q" type="search" value="{{ busca }}" placeholder="Ex.: nome da empresa ou PR-212/2026">
+  </div>
+  <div>
+    <label for="tipo">Tipo</label>
+    <select id="tipo" name="tipo">
+      <option value="">Todos</option>
+      {% for valor, rotulo in tipos %}
+        <option value="{{ valor }}"{% if valor == tipo_atual %} selected{% endif %}>{{ rotulo }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label for="uf">UF</label>
+    <select id="uf" name="uf">
+      <option value="">Todas</option>
+      {% for uf in ufs %}
+        <option value="{{ uf }}"{% if uf == uf_atual %} selected{% endif %}>{{ uf }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit">Buscar</button>
+</form>
+
+<p class="resumo" aria-live="polite">
+  {% if busca or tipo_atual or uf_atual %}
+    {{ paginator.count }} convênio{{ paginator.count|pluralize }} encontrado{{ paginator.count|pluralize }}
+    · <a href="{% url 'convenios:lista' %}">limpar busca</a>
+  {% else %}
+    {{ total_vigentes }} convênio{{ total_vigentes|pluralize }} vigente{{ total_vigentes|pluralize }}
+  {% endif %}
+</p>
+
+{% if convenios %}
+<table>
+  <thead>
+    <tr><th scope="col">Concedente</th><th scope="col">Nº do convênio</th><th scope="col">Vigência</th>
+        <th scope="col">Local</th><th scope="col">Tipo</th></tr>
+  </thead>
+  <tbody>
+  {% for convenio in convenios %}
+    <tr>
+      <td>
+        <a href="{% url 'convenios:detalhe' convenio.pk %}">{{ convenio.concedente.razao_social }}</a>
+        {% with cnpj=convenio.concedente.documento|cnpj_publico %}{% if cnpj %}<small>CNPJ {{ cnpj }}</small>{% endif %}{% endwith %}
+      </td>
+      <td data-rotulo="Nº">{{ convenio.numero }}</td>
+      <td data-rotulo="Vigência">{{ convenio.inicio_vigencia|date:"d/m/Y" }} a {{ convenio.fim_vigencia|date:"d/m/Y" }}</td>
+      <td data-rotulo="Local">{{ convenio.concedente.cidade }}/{{ convenio.concedente.uf }}</td>
+      <td data-rotulo="Tipo">{{ convenio.concedente.get_tipo_display }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% if is_paginated %}
+<nav class="paginas" aria-label="Páginas">
+  {% if page_obj.has_previous %}<a href="?{{ parametros }}{% if parametros %}&amp;{% endif %}page={{ page_obj.previous_page_number }}">← Anterior</a>{% endif %}
+  <span>Página {{ page_obj.number }} de {{ paginator.num_pages }}</span>
+  {% if page_obj.has_next %}<a href="?{{ parametros }}{% if parametros %}&amp;{% endif %}page={{ page_obj.next_page_number }}">Próxima →</a>{% endif %}
+</nav>
+{% endif %}
+{% else %}
+<div class="vazio">
+  <p><strong>Nenhum convênio vigente encontrado.</strong></p>
+  <p>Se a empresa ainda não tem convênio com a UFF, ela pode solicitar um à Divisão de Estágio da PROGRAD.</p>
+</div>
+{% endif %}
+{% endblock %}
