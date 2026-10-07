@@ -31,3 +31,4 @@ Não implemente nada que esteja fora da fase atual do `STEPS.md`. Se o assunto a
 - Português nos documentos, nas mensagens de commit e na interface; código e identificadores em inglês.
 - Nunca colocar credenciais, `.env` ou dados reais de estudantes ou empresas no repositório nem nos testes. Use dados fictícios.
 - Toda regra de negócio nova vem com o seu teste.
+- CPF não aparece em tela ou saída pública. Se um requisito novo exigir expor, use a máscara do gov.br (`***.456.789-**`, RN08) e confirme antes com o responsável.

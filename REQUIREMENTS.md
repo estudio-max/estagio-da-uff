@@ -70,6 +70,7 @@ Aplicáveis ao MVP:
 - RN04 — Apenas a Divisão de Estágio escreve no MVP (grupo "Divisão de Estágio"). Convênio e concedente não são excluídos: convênio errado vira "cancelado".
 - RN06 — Concedente identificada por CPF (pessoa física, ex.: profissional liberal) ou CNPJ, com dígito verificador validado. *Premissa, D14.*
 - RN07 — Vigência do convênio de no máximo 5 anos. *Premissa, D15.*
+- RN08 — CPF não aparece na página pública nem é buscável publicamente (LGPD); internamente (admin da Divisão) aparece completo. Se algum dia precisar ser exposto ao público, usa a máscara do gov.br: `***.456.789-**` (só os 6 dígitos do meio). Decidido em 07/10/2026.
 - RN05 — Tipos de convênio (lista oficial do formulário atual da PROGRAD): Instituição de Ensino Privada; Empresa Privada; ONGs e OSCIPs; Órgãos dos Governos Federal, Estadual e Municipal; Profissional Liberal; Agente de Integração; Instituições de Ensino Públicas; Microempresas; Outros.
 
 Para fases futuras (fonte: Lei 11.788/2008 e páginas da PROGRAD — confirmar com a Divisão antes de implementar):

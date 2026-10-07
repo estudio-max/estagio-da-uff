@@ -101,7 +101,7 @@ def test_campos_internos_nao_vazam_na_lista_nem_no_detalhe(client: Client) -> No
 
 @pytest.mark.security
 @pytest.mark.django_db
-def test_cpf_de_pessoa_fisica_nunca_e_exibido_nem_buscavel(client: Client) -> None:
+def test_cpf_de_pessoa_fisica_nao_aparece_nem_e_buscavel(client: Client) -> None:
     pessoa = concedente(
         "52998224725",
         razao_social="Profissional Fictício",
@@ -110,8 +110,10 @@ def test_cpf_de_pessoa_fisica_nunca_e_exibido_nem_buscavel(client: Client) -> No
     c = convenio(pessoa)
     for html in [pagina(client), pagina(client, f"/convenios/{c.pk}/")]:
         assert "Profissional Fictício" in html
+        assert "CPF" not in html and "***" not in html  # RN08: nem cifrado
         assert "529.982.247-25" not in html
         assert "52998224725" not in html
+        assert "982.247" not in html and "982247" not in html
     # Quem sabe o CPF não consegue confirmar, pela busca, que a pessoa tem convênio.
     assert "Profissional Fictício" not in pagina(client, q="529.982.247-25")
 
