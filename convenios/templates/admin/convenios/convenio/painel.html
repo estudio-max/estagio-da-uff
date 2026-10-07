@@ -3,10 +3,56 @@
 {% block extrastyle %}
 {{ block.super }}
 <style>
-  .painel { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-  .painel .module { margin: 0; }
+  .painel { display: grid; gap: 24px; }
+  .painel .module { margin: 0; padding-bottom: 8px; }
+  .painel .module h2 { margin: 0; }
+  .grade-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; }
   .painel td.n, .painel th.n { text-align: right; font-variant-numeric: tabular-nums; }
-  .painel .nota { color: var(--body-quiet-color); padding: 8px 10px; margin: 0; }
+  .painel .nota, .grafico-descricao { color: var(--suave); padding: 8px 20px 0; margin: 0; font-size: .875rem; }
+
+  /* Indicadores */
+  .indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+  .indicador { background: var(--superficie); border-radius: var(--raio); box-shadow: var(--sombra); padding: 20px 22px; }
+  .indicador .rotulo { color: var(--suave); font-size: .875rem; }
+  .indicador .valor { display: block; font-size: 2rem; font-weight: 600; color: var(--texto-forte); margin: 4px 0; }
+  .indicador .contexto { color: var(--suave); font-size: .8rem; }
+  a.indicador { text-decoration: none; color: inherit; }
+  a.indicador:hover { box-shadow: 0 9px 24px rgba(115, 102, 255, 0.18); }
+  .indicador.alerta { border-left: 4px solid #d03b3b; }
+  .indicador.alerta .contexto::before { content: "⚠ "; color: #d03b3b; }
+
+  /* Colunas */
+  .colunas { display: flex; align-items: flex-end; gap: 2px; height: 220px; padding: 28px 20px 0; }
+  .coluna { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    height: 100%; position: relative; outline: none; }
+  .coluna .area { flex: 1; width: 100%; position: relative; display: flex; align-items: flex-end;
+    justify-content: center; border-bottom: 1px solid var(--border-color); }
+  .coluna .marca { width: 100%; max-width: 24px; background: var(--cor-principal); border-radius: 4px 4px 0 0;
+    min-height: 2px; }
+  .coluna.recessiva .marca { background: #b3b2c2; }
+  .coluna .eixo { font-size: .7rem; color: var(--suave); margin-top: 6px; white-space: nowrap; height: 1.2em; }
+  .coluna .valor { position: absolute; left: 0; right: 0; text-align: center; margin-bottom: 4px;
+    font-size: .75rem; color: var(--texto); }
+  .coluna .dica { display: none; position: absolute; bottom: calc(100% + 4px); white-space: nowrap; z-index: 2;
+    background: var(--texto-forte); color: #fff; font-size: .75rem; padding: 4px 8px; border-radius: 6px; }
+  .coluna:hover .dica, .coluna:focus .dica { display: block; }
+  .coluna:hover .marca, .coluna:focus .marca { filter: brightness(0.9); }
+
+  /* Barras horizontais */
+  .barras { list-style: none; margin: 0; padding: 16px 20px 8px; display: grid; gap: 10px; }
+  .barras li { display: grid; grid-template-columns: minmax(120px, 38%) 1fr 3.5em; align-items: center; gap: 12px;
+    padding: 0; font-size: .85rem; outline: none; }
+  .barras .rotulo { color: var(--texto); overflow-wrap: anywhere; }
+  .barras .trilho { height: 16px; display: flex; align-items: center; }
+  .barras .marca { height: 16px; background: var(--cor-principal); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .barras .marca.recessiva { background: #b3b2c2; }
+  .barras .valor { text-align: right; font-variant-numeric: tabular-nums; color: var(--texto); }
+  .barras li:hover .marca, .barras li:focus .marca { filter: brightness(0.9); }
+
+  .tabela-grafico { padding: 4px 20px 8px; font-size: .85rem; }
+  .tabela-grafico summary { cursor: pointer; color: var(--cor-principal); }
+  .tabela-grafico table { margin-top: 8px; }
+  .tabela-grafico td { text-align: right; font-variant-numeric: tabular-nums; }
 </style>
 {% endblock %}
 
@@ -19,79 +65,113 @@
 {% endblock %}
 
 {% block content %}
+{% with i=indicadores %}
 <div class="painel">
 
-  <div class="module">
-    <table style="width:100%">
-      <caption>Convênios por situação</caption>
-      <tbody>
-      {% for rotulo, n in indicadores.por_vigencia.items %}
-        <tr><th scope="row">{{ rotulo }}</th><td class="n">{{ n }}</td></tr>
-      {% endfor %}
-      </tbody>
-    </table>
+  <div class="indicadores">
+    <div class="indicador">
+      <span class="rotulo">Convênios vigentes</span>
+      <span class="valor">{{ i.por_vigencia.Vigente }}</span>
+      <span class="contexto">{{ i.por_vigencia.Vencido }} vencidos no histórico</span>
+    </div>
+    <a class="indicador" href="{% url 'admin:convenios_convenio_changelist' %}?vence_em=90">
+      <span class="rotulo">Vencem nos próximos 90 dias</span>
+      <span class="valor">{{ i.vencem_90 }}</span>
+      <span class="contexto">{{ i.vencem_30 }} nos próximos 30 dias</span>
+    </a>
+    <div class="indicador{% if i.taxa_renovacao is not None and i.taxa_renovacao < 0.5 %} alerta{% endif %}">
+      <span class="rotulo">Não renovaram (últimos 12 meses)</span>
+      <span class="valor">{{ i.total_nao_renovados }}</span>
+      <span class="contexto">{% if i.taxa_renovacao is not None %}renovação de {% widthratio i.taxa_renovacao 1 100 %}% das que venceram{% else %}nenhum vencimento no período{% endif %}</span>
+    </div>
+    <div class="indicador{% if i.vigentes_sem_documento %} alerta{% endif %}">
+      <span class="rotulo">Vigentes sem CNPJ/CPF</span>
+      <span class="valor">{{ i.vigentes_sem_documento }}</span>
+      <span class="contexto">cadastro a completar (D20)</span>
+    </div>
   </div>
 
-  <div class="module">
-    <table style="width:100%">
-      <caption>Vigentes que vencem</caption>
-      <tbody>
-      {% for dias, n in indicadores.vencendo.items %}
-        <tr>
-          <th scope="row"><a href="{% url 'admin:convenios_convenio_changelist' %}?vence_em={{ dias }}">nos próximos {{ dias }} dias</a></th>
-          <td class="n">{{ n }}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+  <div class="grade-2">
+    {% include "admin/convenios/convenio/_grafico_colunas.html" with barras=i.vencimentos_por_mes titulo="Vencimentos nos próximos 12 meses" descricao="Convênios vigentes por mês de término. Em destaque, os 3 meses mais próximos: a fila de renovação." id="vencimentos" unidade="convênio(s)" %}
+    {% include "admin/convenios/convenio/_grafico_colunas.html" with barras=i.novos_por_ano titulo="Convênios por ano de início" descricao="Todos os convênios finalizados, inclusive vencidos. O ano atual está em andamento." id="por-ano" unidade="convênio(s)" %}
   </div>
 
-  <div class="module">
-    <table style="width:100%">
-      <caption>Tempo de tramitação</caption>
-      <tbody>
-      {% if indicadores.tramitacao_amostra %}
-        <tr><th scope="row">Média</th><td class="n">{{ indicadores.tramitacao_media|floatformat:0 }} dias</td></tr>
-        <tr><th scope="row">Mediana</th><td class="n">{{ indicadores.tramitacao_mediana|floatformat:0 }} dias</td></tr>
-        <tr><th scope="row">Convênios considerados</th><td class="n">{{ indicadores.tramitacao_amostra }}</td></tr>
-      {% else %}
-        <tr><td>Nenhum convênio finalizado no período.</td></tr>
-      {% endif %}
-      </tbody>
-    </table>
-    <p class="nota">Da primeira etapa registrada (ou do cadastro) até a finalização, nos últimos {{ periodo_tramitacao }} dias.</p>
+  <div class="grade-2">
+    {% include "admin/convenios/convenio/_grafico_barras.html" with barras=i.por_uf titulo="Vigentes por UF" descricao="As demais UFs e cadastros sem UF estão em Outras." id="por-uf" unidade="convênio(s)" %}
+    {% include "admin/convenios/convenio/_grafico_barras.html" with barras=i.por_tipo titulo="Vigentes por tipo de concedente" descricao="Tipos zerados vêm da importação: o Drupal não distinguia esses tipos (D11)." id="por-tipo" unidade="convênio(s)" %}
   </div>
 
-  <div class="module">
-    <table style="width:100%">
-      <caption>Vigentes por tipo de concedente</caption>
-      <tbody>
-      {% for rotulo, n in indicadores.por_tipo %}
-        <tr><th scope="row">{{ rotulo }}</th><td class="n">{{ n }}</td></tr>
-      {% endfor %}
-      </tbody>
-    </table>
+  <div class="grade-2">
+    <div class="module">
+      <table style="width:100%">
+        <caption>Concedentes que não renovaram</caption>
+        {% if i.nao_renovados %}
+        <thead><tr><th>Concedente</th><th class="n">Último convênio venceu em</th></tr></thead>
+        <tbody>
+        {% for n in i.nao_renovados %}
+          <tr>
+            <td><a href="{% url 'admin:convenios_concedente_change' n.concedente.pk %}">{{ n.concedente }}</a></td>
+            <td class="n">{{ n.ultimo_fim|date:"d/m/Y" }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody><tr><td>Todas as concedentes com vencimento recente renovaram.</td></tr></tbody>
+        {% endif %}
+      </table>
+      <p class="nota">As {{ i.nao_renovados|length }} mais recentes de {{ i.total_nao_renovados }}: venceram nos últimos 12 meses sem outro convênio ativo. Boas candidatas a contato.</p>
+    </div>
+
+    <div class="module">
+      <table style="width:100%">
+        <caption>Em tramitação há mais tempo</caption>
+        {% if i.parados %}
+        <thead><tr><th>Convênio</th><th>Concedente</th><th class="n">Dias</th></tr></thead>
+        <tbody>
+        {% for p in i.parados %}
+          <tr>
+            <td><a href="{% url 'admin:convenios_convenio_change' p.convenio.pk %}">{{ p.convenio.numero|default:"sem número" }}</a></td>
+            <td>{{ p.convenio.concedente }}</td>
+            <td class="n">{{ p.dias }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody><tr><td>Nenhum convênio em tramitação.</td></tr></tbody>
+        {% endif %}
+      </table>
+    </div>
   </div>
 
-  <div class="module" style="grid-column: 1 / -1">
-    <table style="width:100%">
-      <caption>Em tramitação há mais tempo</caption>
-      {% if indicadores.parados %}
-      <thead><tr><th>Convênio</th><th>Concedente</th><th class="n">Dias em tramitação</th></tr></thead>
-      <tbody>
-      {% for p in indicadores.parados %}
-        <tr>
-          <td><a href="{% url 'admin:convenios_convenio_change' p.convenio.pk %}">{{ p.convenio.numero|default:"sem número" }}</a></td>
-          <td>{{ p.convenio.concedente }}</td>
-          <td class="n">{{ p.dias }}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-      {% else %}
-      <tbody><tr><td>Nenhum convênio em tramitação.</td></tr></tbody>
-      {% endif %}
-    </table>
+  <div class="grade-2">
+    <div class="module">
+      <table style="width:100%">
+        <caption>Convênios por situação</caption>
+        <tbody>
+        {% for rotulo, n in i.por_vigencia.items %}
+          <tr><th scope="row">{{ rotulo }}</th><td class="n">{{ n }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="module">
+      <table style="width:100%">
+        <caption>Tempo de tramitação</caption>
+        <tbody>
+        {% if i.tramitacao_amostra %}
+          <tr><th scope="row">Média</th><td class="n">{{ i.tramitacao_media|floatformat:0 }} dias</td></tr>
+          <tr><th scope="row">Mediana</th><td class="n">{{ i.tramitacao_mediana|floatformat:0 }} dias</td></tr>
+          <tr><th scope="row">Convênios considerados</th><td class="n">{{ i.tramitacao_amostra }}</td></tr>
+        {% else %}
+          <tr><td>Nenhum convênio finalizado no período.</td></tr>
+        {% endif %}
+        </tbody>
+      </table>
+      <p class="nota">Da primeira etapa registrada (ou do cadastro) até a finalização, nos últimos {{ periodo_tramitacao }} dias. Importados ficam de fora (D19).</p>
+    </div>
   </div>
 
 </div>
+{% endwith %}
 {% endblock %}

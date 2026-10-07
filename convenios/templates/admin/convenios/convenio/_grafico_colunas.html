@@ -1,0 +1,23 @@
+{# Colunas de uma série. Variáveis: barras (list[Barra]), titulo, descricao, id, unidade. #}
+<section class="grafico module" aria-labelledby="{{ id }}-titulo">
+  <h2 id="{{ id }}-titulo">{{ titulo }}</h2>
+  {% if descricao %}<p class="grafico-descricao">{{ descricao }}</p>{% endif %}
+  <div class="colunas" role="img" aria-label="{{ titulo }}. Valores na tabela abaixo.">
+    {% for b in barras %}
+      <div class="coluna{% if not b.destaque %} recessiva{% endif %}" tabindex="0">
+        <span class="dica">{{ b.rotulo }}: {{ b.valor }} {{ unidade }}</span>
+        <span class="area">
+          <span class="marca" style="height: {{ b.pct|stringformat:'.1f' }}%"></span>
+          {% if forloop.last or b.pct == 100.0 %}<span class="valor" style="bottom: {{ b.pct|stringformat:'.1f' }}%">{{ b.valor }}</span>{% endif %}
+        </span>
+        <span class="eixo">{{ b.rotulo_eixo }}</span>
+      </div>
+    {% endfor %}
+  </div>
+  <details class="tabela-grafico">
+    <summary>Ver valores em tabela</summary>
+    <table>
+      <tbody>{% for b in barras %}<tr><th scope="row">{{ b.rotulo }}</th><td>{{ b.valor }}</td></tr>{% endfor %}</tbody>
+    </table>
+  </details>
+</section>
