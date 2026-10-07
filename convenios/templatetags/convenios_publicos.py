@@ -6,6 +6,8 @@ register = template.Library()
 
 
 @register.filter
-def cnpj_publico(documento: str) -> str:
+def cnpj_publico(documento: str | None) -> str:
     """CNPJ formatado; CPF (pessoa física) nunca é exibido na página pública (LGPD)."""
-    return "" if len(documento) == 11 else formatar(documento)
+    if not documento or len(documento) == 11:
+        return ""
+    return formatar(documento)

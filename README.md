@@ -15,6 +15,15 @@ DJANGO_DEBUG=1 uv run python manage.py createsuperuser
 DJANGO_DEBUG=1 uv run python manage.py runserver
 ```
 
+## Importação do estagio.uff.br
+
+```bash
+uv run python manage.py importar_convenios_drupal conveniosestagio.xml --simular
+uv run python manage.py importar_convenios_drupal conveniosestagio.xml
+```
+
+O XML vem da exportação do Drupal, feita com login. Rejeitados e avisos vão para `reports/importacao.csv` (abre no Excel). Rodar de novo atualiza, sem duplicar. O arquivo tem dados reais: não o coloque no repositório.
+
 ## Tarefas agendadas
 
 Em produção, rode uma vez por dia (cron da STI):

@@ -30,6 +30,8 @@ extend-exclude = ["*/migrations/*"]
 select = ["E", "F", "W", "I", "N", "UP", "B", "S", "DJ", "C90", "SIM", "RUF"]
 # RUF012: Django declara configuração em atributos de classe mutáveis (list_display, Meta.ordering).
 ignore = ["RUF012"]
+# Códigos V... são do vulture (código morto), usados em "# noqa: V107".
+external = ["V"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10

@@ -2,7 +2,7 @@
 
 ## 1. Arquitetura atual
 
-Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin a validação de CPF/CNPJ (`documentos.py`) a página pública (`views.py`, `templates/convenios/`), sem JavaScript e com CSS próprio, os alertas de vencimento (`alertas.py` + comando `enviar_alertas_vencimento`) e o painel de indicadores (`painel.py`, página extra do admin). Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
+Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin a validação de CPF/CNPJ (`documentos.py`) a página pública (`views.py`, `templates/convenios/`), sem JavaScript e com CSS próprio, os alertas de vencimento (`alertas.py` + comando `enviar_alertas_vencimento`) o painel de indicadores (`painel.py`, página extra do admin) e a importação do Drupal (`importacao.py` + comando `importar_convenios_drupal`). Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
 
 O processo de negócio hoje roda sobre:
 
@@ -48,7 +48,7 @@ erDiagram
   USUARIO ||--o{ AUDITORIA : faz
   CONCEDENTE {
     int id
-    string documento UK "CPF ou CNPJ, só caracteres"
+    string documento UK "CPF ou CNPJ; nulo só em importado (D20)"
     string razao_social
     string nome_fantasia
     enum tipo "ver REQUIREMENTS RN05 (9 tipos)"
@@ -71,7 +71,8 @@ erDiagram
     date fim_vigencia
     enum situacao "em_tramitacao|finalizado|cancelado"
     text observacoes_internas
-    date finalizado_em "automático (MS05)"
+    date finalizado_em "automático na transição (MS05)"
+    int id_drupal UK "origem da importação"
   }
   ETAPA_CONVENIO {
     int id
@@ -116,6 +117,7 @@ erDiagram
 | A8 | Histórico pelo `LogEntry` nativo do admin: quem, quando e quais campos mudaram, sem o valor anterior (D17) | Decidida em 06/10/2026 |
 | A9 | Permissão por grupo "Divisão de Estágio", criado por migração | Decidida em 06/10/2026 |
 | A10 | Alertas por comando de gerenciamento agendado no cron do servidor, sem fila nem Celery: 1 execução por dia basta para ~2.000 convênios | Decidida em 06/10/2026 |
+| A11 | Importação pelo XML do Drupal com `id_drupal` como chave (reimportar atualiza); um savepoint por registro, para um erro não derrubar a carga | Decidida em 07/10/2026 |
 | A6 | Ferramentas: uv, ruff, mypy strict, vulture, pip-audit, pytest-django; pipeline único em `tools/ci.py` | Decidida |
 | A4 | SEI permanece processo oficial; sistema guarda nº do processo | Provisória — D1 |
 | A5 | Status de vigência derivado de datas | Proposta |
