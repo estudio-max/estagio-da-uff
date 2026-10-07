@@ -1,7 +1,7 @@
 """Pipeline local, o mesmo que roda no GitHub Actions. Falha na primeira etapa reprovada.
 
 Uso:  uv run python tools/ci.py [etapa ...]
-Sem argumento roda tudo. Etapas: format lint types deadcode audit unit integration
+Sem argumento roda tudo. Etapas: format lint types deadcode migrations audit unit integration
 security smoke e2e coverage check
 """
 
@@ -17,6 +17,7 @@ ETAPAS: dict[str, list[str]] = {
     "lint": ["ruff", "check", "."],
     "types": ["mypy", "."],
     "deadcode": ["vulture"],
+    "migrations": [sys.executable, "manage.py", "makemigrations", "--check", "--dry-run"],
     "audit": ["pip-audit", "--progress-spinner", "off"],
     "unit": [*PYTEST, "-m", "unit"],
     "integration": [*PYTEST, "-m", "integration"],

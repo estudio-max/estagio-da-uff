@@ -4,6 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "django>=5.2,<5.3",
+    "django-stubs-ext>=6.1.2",
     "psycopg[binary]>=3.2",
 ]
 
@@ -27,6 +28,8 @@ extend-exclude = ["*/migrations/*"]
 [tool.ruff.lint]
 # E/F/W básicos, I imports, N nomes, UP modernização, B bugs, S segurança (bandit), DJ django, C90 complexidade
 select = ["E", "F", "W", "I", "N", "UP", "B", "S", "DJ", "C90", "SIM", "RUF"]
+# RUF012: Django declara configuração em atributos de classe mutáveis (list_display, Meta.ordering).
+ignore = ["RUF012"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
@@ -59,7 +62,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["config", "core"]
+source = ["config", "core", "convenios"]
 omit = ["*/migrations/*", "config/asgi.py", "config/wsgi.py"]
 
 [tool.coverage.report]
@@ -67,5 +70,5 @@ fail_under = 90
 show_missing = true
 
 [tool.vulture]
-paths = ["config", "core", "tools"]
+paths = ["config", "core", "convenios", "tools"]
 min_confidence = 80
