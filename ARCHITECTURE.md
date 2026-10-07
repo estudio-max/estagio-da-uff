@@ -2,7 +2,7 @@
 
 ## 1. Arquitetura atual
 
-Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin e a validação de CPF/CNPJ (`documentos.py`). Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
+Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin a validação de CPF/CNPJ (`documentos.py`) e a página pública (`views.py`, `templates/convenios/`), sem JavaScript e com CSS próprio. Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
 
 O processo de negócio hoje roda sobre:
 

@@ -33,8 +33,8 @@ Diretriz da reunião: **separar o "o quê" do "como"**. O "o quê" do processo a
 |---|---|---|
 | RF01 | Cadastrar convênio: concedente (razão social, CNPJ, tipo — ver RN05), nº do convênio, nº do processo SEI, modalidade de minuta (padrão UFF / externa), datas de início e fim de vigência, situação, observações internas. | Implementado (1a) |
 | RF02 | Registrar o andamento interno do processo (etapas: documentação recebida, análise, termo preparado, assinatura concedente, assinatura pró-reitor, ratificação, publicação do extrato no BS, finalizado). | Implementado (1a) |
-| RF03 | Marcar, por campo, o que é público. Definição pela PROGRAD. | Pendente |
-| RF04 | Página pública com convênios vigentes, com busca por nome/CNPJ/tipo. Convênio entra na página automaticamente ao ser finalizado. | Pendente |
+| RF03 | Marcar, por campo, o que é público. Definição pela PROGRAD. Hoje é fixa no template, espelhando o site atual; CPF nunca é público. | Implementado (1c) |
+| RF04 | Página pública com convênios vigentes, com busca por nome/CNPJ/tipo. Convênio entra na página automaticamente ao ser finalizado. | Implementado (1c) |
 | RF05 | Alertas de vencimento para a Divisão (e-mail e painel), com antecedências configuráveis. | Pendente |
 | RF06 | Painéis estratégicos: vigentes, encerrados/vencidos, vencendo em 30/90/180 dias, em tramitação, por tipo de concedente. Visibilidade (pública/privada) definida pela PROGRAD. | Pendente |
 | RF07 | Importar os dados atuais das planilhas (públicos e privados) e da página do site. | Pendente |
@@ -214,4 +214,5 @@ TCE e ciclo do estágio, integração com sistema acadêmico, assinatura digital
 | D15 | ~~Vigência máxima de 5 anos?~~ **Premissa adotada em 06/10/2026:** o cadastro bloqueia vigência acima de 5 anos. Confirmar com a PROGRAD. | — | PROGRAD |
 | D16 | ~~Adotar o SIGAA?~~ **Resolvida em 06/10/2026:** a UFF não tem acesso ao SIGAA. Seguimos com sistema próprio, usando a Central de Estágios do SIGAA como referência de fluxo (seção 4.2). | — | — |
 | D17 | O histórico (RF08) precisa mostrar o valor anterior de cada campo, ou basta saber quem mudou, quando e quais campos? | (a) basta o histórico nativo do admin (atual); (b) adotar django-simple-history | PROGRAD |
+| D18 | Convênio finalizado que ainda não começou ("a iniciar") deve aparecer na página pública? | (a) não, só vigentes (atual, RN01); (b) sim, com selo "a partir de dd/mm" | PROGRAD |
 | D10 | Credenciamento gov.br da UFF para login único (Fase 2) já existe? | — | STI |
