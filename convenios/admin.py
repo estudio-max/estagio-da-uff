@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import cast
+from typing import Any, cast
 
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
@@ -31,6 +31,12 @@ class ConcedenteAdmin(admin.ModelAdmin[Concedente]):
     list_display = ["razao_social", "nome_fantasia", "documento_formatado", "tipo", "uf", "cidade"]
     list_filter = ["tipo", "uf"]
     search_fields = ["razao_social", "nome_fantasia", "documento"]
+
+    def get_form(self, *args: Any, **kwargs: Any) -> Any:
+        # Cadastro e edição exigem o documento, mesmo que o registro importado venha sem (D20).
+        form = super().get_form(*args, **kwargs)
+        form.base_fields["documento"].required = True
+        return form
 
     @admin.display(description="CPF/CNPJ", ordering="documento")
     def documento_formatado(self, obj: Concedente) -> str:

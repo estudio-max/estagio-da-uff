@@ -75,6 +75,9 @@ class Concedente(models.Model):
         "CPF/CNPJ",
         max_length=14,
         unique=True,
+        # Vazio só em registro importado do Drupal sem CNPJ (D20); o admin exige o documento.
+        null=True,
+        blank=True,
         validators=[documentos.validar_documento],
         help_text="Com ou sem pontuação. Pessoa física (ex.: profissional liberal) usa CPF.",
     )
@@ -94,12 +97,12 @@ class Concedente(models.Model):
 
     def clean_fields(self, exclude: object = None) -> None:
         # Normaliza antes de validar: validador e unique comparam só os caracteres do documento.
-        self.documento = documentos.normalizar(self.documento)
+        self.documento = documentos.normalizar(self.documento or "") or None
         super().clean_fields(exclude=exclude)  # type: ignore[arg-type]
 
     @property
     def documento_formatado(self) -> str:
-        return documentos.formatar(self.documento)
+        return documentos.formatar(self.documento or "")
 
 
 class Situacao(models.TextChoices):
@@ -176,6 +179,15 @@ class Convenio(models.Model):
         help_text="Preenchido ao marcar como finalizado; base do tempo de tramitação (MS05).",
     )
 
+    id_drupal = models.PositiveIntegerField(
+        "nó no Drupal",
+        null=True,
+        blank=True,
+        unique=True,
+        editable=False,
+        help_text="Origem na importação do estagio.uff.br (RF07); permite reimportar sem duplicar.",
+    )
+
     objects = ConvenioQuerySet.as_manager()
 
     class Meta:
@@ -207,11 +219,21 @@ class Convenio(models.Model):
         return f"{self.numero or 'sem número'} — {self.concedente}"
 
     def save(self, *args: Any, **kwargs: Any) -> None:
-        if self.situacao == Situacao.FINALIZADO and self.finalizado_em is None:
+        # Só a transição para finalizado registra a data: convênio importado já finalizado
+        # (sem data conhecida, D19) não ganha "hoje" ao ser editado.
+        virou_finalizado = getattr(self, "_situacao_carregada", None) != Situacao.FINALIZADO
+        if self.situacao == Situacao.FINALIZADO and self.finalizado_em is None and virou_finalizado:
             self.finalizado_em = timezone.localdate()
         elif self.situacao != Situacao.FINALIZADO:
             self.finalizado_em = None
         super().save(*args, **kwargs)
+        self._situacao_carregada = self.situacao
+
+    @classmethod
+    def from_db(cls, *args: Any, **kwargs: Any) -> "Convenio":  # noqa: V107 (super() usa cls)
+        instancia = super().from_db(*args, **kwargs)
+        instancia._situacao_carregada = instancia.situacao
+        return instancia
 
     def clean(self) -> None:
         if (
