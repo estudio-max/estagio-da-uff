@@ -4,19 +4,20 @@
 {% block estilo %}
 <style>
   .busca { display: grid; grid-template-columns: 1fr 220px 110px auto; gap: 12px; align-items: end;
-    background: var(--superficie); border: 1px solid var(--borda); border-radius: 8px; padding: 16px; }
+    background: var(--superficie); border-radius: var(--raio); box-shadow: var(--sombra); padding: 20px; }
   .busca label { display: block; font-size: .875rem; font-weight: 600; margin-bottom: 4px; }
   .busca input, .busca select, .busca button { width: 100%; font: inherit; padding: 8px 10px;
-    border: 1px solid var(--borda); border-radius: 6px; background: var(--superficie); color: var(--texto); }
+    border: 1px solid var(--border-color); border-radius: var(--raio-pequeno); background: var(--superficie); color: var(--texto); }
   .busca button { background: var(--marca); color: var(--marca-texto); border-color: var(--marca);
     font-weight: 600; cursor: pointer; }
   .resumo { color: var(--suave); margin: 20px 0 8px; }
   table { width: 100%; border-collapse: collapse; background: var(--superficie);
-    border: 1px solid var(--borda); border-radius: 8px; overflow: hidden; }
+    border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; }
   th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borda); vertical-align: top; }
-  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; color: var(--suave); background: var(--destaque); }
+  th { font-size: .85rem; font-weight: 500; color: var(--suave); background: var(--darkened-bg); }
   td small { color: var(--suave); display: block; }
-  .vazio { background: var(--superficie); border: 1px dashed var(--borda); border-radius: 8px; padding: 32px; text-align: center; }
+  td[data-rotulo="Nº"] { white-space: nowrap; }
+  .vazio { background: var(--superficie); border-radius: var(--raio); box-shadow: var(--sombra); padding: 32px; text-align: center; }
   .paginas { display: flex; gap: 16px; justify-content: center; align-items: center; margin-top: 20px; }
   @media (max-width: 760px) {
     .busca { grid-template-columns: 1fr 1fr; }
