@@ -35,7 +35,7 @@ Diretriz da reunião: **separar o "o quê" do "como"**. O "o quê" do processo a
 | RF02 | Registrar o andamento interno do processo (etapas: documentação recebida, análise, termo preparado, assinatura concedente, assinatura pró-reitor, ratificação, publicação do extrato no BS, finalizado). | Implementado (1a) |
 | RF03 | Marcar, por campo, o que é público. Definição pela PROGRAD. Hoje é fixa no template, espelhando o site atual; CPF nunca é público. | Implementado (1c) |
 | RF04 | Página pública com convênios vigentes, com busca por nome/CNPJ/tipo. Convênio entra na página automaticamente ao ser finalizado. | Implementado (1c) |
-| RF05 | Alertas de vencimento para a Divisão (e-mail e painel), com antecedências configuráveis. | Pendente |
+| RF05 | Alertas de vencimento para a Divisão (e-mail e painel), com antecedências configuráveis. | Implementado (1d) |
 | RF06 | Painéis estratégicos: vigentes, encerrados/vencidos, vencendo em 30/90/180 dias, em tramitação, por tipo de concedente. Visibilidade (pública/privada) definida pela PROGRAD. | Pendente |
 | RF07 | Importar os dados atuais das planilhas (públicos e privados) e da página do site. | Pendente |
 | RF08 | Histórico de alterações de cada convênio (quem, quando, o quê). | Implementado (1a) |
@@ -88,7 +88,7 @@ O SIGAA é a referência de fluxo (ARCHITECTURE A7), mas **superar as falhas del
 
 | ID | Falha no SIGAA | Melhoria exigida | Critério de aceitação | Fase | Status |
 |---|---|---|---|---|---|
-| MS01 | A coordenação não fica sabendo de um novo pré-cadastro; o estudante precisa avisar por email | Quem tem a próxima ação recebe aviso automático (email e painel) | Toda mudança de etapa gera notificação ao responsável seguinte, verificada em teste | 2, 3 | Pendente |
+| MS01 | A coordenação não fica sabendo de um novo pré-cadastro; o estudante precisa avisar por email | Quem tem a próxima ação recebe aviso automático (email e painel) | Toda mudança de etapa gera notificação ao responsável seguinte, verificada em teste | 1d, 2, 3 | Parcial (1d: a Divisão é avisada do vencimento sem precisar consultar planilha) |
 | MS02 | SIGAA e SIPAC não se integram: o termo é baixado de um e enviado ao outro, nos dois sentidos | O documento é gerado, assinado e arquivado dentro do sistema | Nenhum passo do fluxo exige baixar e reenviar arquivo | 3, 4 | Pendente |
 | MS03 | Assinantes externos precisam criar conta no SIPAC antes | O externo entra com gov.br, sem cadastro prévio | Supervisor ou concedente assina na primeira visita, só com gov.br | 2, 4 | Pendente |
 | MS04 | Ninguém vê quem falta assinar (a dica oficial é o estudante assinar por último) | Todos os envolvidos veem o status de cada assinatura | Painel do processo lista assinado/pendente por parte, para todas as partes | 3 | Pendente |
@@ -200,7 +200,7 @@ TCE e ciclo do estágio, integração com sistema acadêmico, assinatura digital
 |---|---|---|---|
 | D1 | O processo de convênio precisa obrigatoriamente tramitar no SEI? | (a) SEI continua sendo o processo oficial, sistema só controla; (b) sistema abre processo no SEI via API; (c) migrar fluxo para fora do SEI. Consenso provisório: trabalhar em paralelo, Divisão abre o processo no SEI. | PROGRAD + STI |
 | D2 | Quais campos do convênio são públicos? | Lista atual do site como ponto de partida. | PROGRAD |
-| D3 | Antecedências dos alertas de vencimento? | 12, 6, 3 e 1 mês (sugestão da reunião: "um ano, seis meses"). | PROGRAD |
+| D3 | Antecedências dos alertas de vencimento? **Premissa adotada em 06/10/2026:** 365, 180, 90 e 30 dias (variável `ALERTA_ANTECEDENCIAS_DIAS`, muda sem código). Confirmar com a PROGRAD, e qual email recebe. | — | PROGRAD |
 | D4 | Quais painéis são públicos? | STI sugere público; PROGRAD decide. | PROGRAD |
 | D5 | ~~Stack~~ Django decidido em 06/10/2026. Hospedagem: padrão da STI? | — | STI |
 | D6 | Login: gov.br ou idUFF (provável), a definir. | Até lá, login nativo do Django; o escolhido entra como backend de autenticação sem reestruturar. | STI |

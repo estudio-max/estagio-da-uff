@@ -15,6 +15,16 @@ DJANGO_DEBUG=1 uv run python manage.py createsuperuser
 DJANGO_DEBUG=1 uv run python manage.py runserver
 ```
 
+## Tarefas agendadas
+
+Em produção, rode uma vez por dia (cron da STI):
+
+```bash
+uv run python manage.py enviar_alertas_vencimento
+```
+
+Requer `DIVISAO_EMAIL` e as variáveis de SMTP (`.env.example`). Em modo debug, o email sai no console.
+
 Para um usuário da Divisão de Estágio editar convênios no admin, ele precisa de `is_staff` e de estar no grupo "Divisão de Estágio".
 
 No PowerShell, defina antes `$env:DJANGO_DEBUG="1"`. Variáveis disponíveis: `.env.example`.

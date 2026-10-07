@@ -2,7 +2,7 @@
 
 ## 1. Arquitetura atual
 
-Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin a validação de CPF/CNPJ (`documentos.py`) e a página pública (`views.py`, `templates/convenios/`), sem JavaScript e com CSS próprio. Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
+Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin a validação de CPF/CNPJ (`documentos.py`) a página pública (`views.py`, `templates/convenios/`), sem JavaScript e com CSS próprio, e os alertas de vencimento (`alertas.py` + comando `enviar_alertas_vencimento`). Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
 
 O processo de negócio hoje roda sobre:
 
@@ -114,6 +114,7 @@ erDiagram
 | A7 | Sistema próprio; a Central de Estágios do SIGAA serve de referência de fluxo e vocabulário, sem dependência técnica (a UFF não tem acesso ao SIGAA) | Decidida em 06/10/2026 |
 | A8 | Histórico pelo `LogEntry` nativo do admin: quem, quando e quais campos mudaram, sem o valor anterior (D17) | Decidida em 06/10/2026 |
 | A9 | Permissão por grupo "Divisão de Estágio", criado por migração | Decidida em 06/10/2026 |
+| A10 | Alertas por comando de gerenciamento agendado no cron do servidor, sem fila nem Celery: 1 execução por dia basta para ~2.000 convênios | Decidida em 06/10/2026 |
 | A6 | Ferramentas: uv, ruff, mypy strict, vulture, pip-audit, pytest-django; pipeline único em `tools/ci.py` | Decidida |
 | A4 | SEI permanece processo oficial; sistema guarda nº do processo | Provisória — D1 |
 | A5 | Status de vigência derivado de datas | Proposta |

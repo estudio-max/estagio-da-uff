@@ -94,6 +94,27 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# Email (alertas de vencimento). Em debug, o email sai no console.
+EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend"
+    if DEBUG
+    else "django.core.mail.backends.smtp.EmailBackend"
+)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "localhost")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "1") == "1"
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "nao-responda@localhost")
+
+# RF05: quem recebe os alertas e com quanta antecedência (dias). D3 ainda pendente.
+DIVISAO_EMAIL = os.environ.get("DIVISAO_EMAIL", "")
+ALERTA_ANTECEDENCIAS_DIAS = [
+    int(d) for d in os.environ.get("ALERTA_ANTECEDENCIAS_DIAS", "365,180,90,30").split(",")
+]
+# Base dos links nos emails.
+SITE_URL = os.environ.get("SITE_URL", "http://localhost:8000")
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 if not DEBUG:
