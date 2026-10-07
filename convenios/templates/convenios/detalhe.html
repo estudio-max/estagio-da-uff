@@ -30,7 +30,7 @@
     <dt>Término do convênio</dt><dd>{{ convenio.fim_vigencia|date:"l, d \d\e F \d\e Y" }}</dd>
     {% if convenio.processo_sei %}<dt>Nº do processo</dt><dd>{{ convenio.processo_sei }}</dd>{% endif %}
     <dt>Ano</dt><dd>{{ convenio.inicio_vigencia|date:"Y" }}</dd>
-    {% with cnpj=convenio.concedente.documento|cnpj_publico %}{% if cnpj %}<dt>CNPJ</dt><dd>{{ cnpj }}</dd>{% endif %}{% endwith %}
+    {% with doc=convenio.concedente.documento|documento_publico %}{% if doc %}<dt>Documento</dt><dd>{{ doc }}</dd>{% endif %}{% endwith %}
     <dt>Tipo da instituição</dt><dd>{{ convenio.concedente.get_tipo_display }}</dd>
     {% if convenio.concedente.ramo_atividade %}<dt>Ramo de atividade</dt><dd>{{ convenio.concedente.ramo_atividade }}</dd>{% endif %}
     <dt>Cidade</dt><dd>{{ convenio.concedente.cidade }}/{{ convenio.concedente.uf }}</dd>

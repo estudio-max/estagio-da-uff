@@ -77,7 +77,7 @@
     <tr>
       <td>
         <a href="{% url 'convenios:detalhe' convenio.pk %}">{{ convenio.concedente.razao_social }}</a>
-        {% with cnpj=convenio.concedente.documento|cnpj_publico %}{% if cnpj %}<small>CNPJ {{ cnpj }}</small>{% endif %}{% endwith %}
+        {% with doc=convenio.concedente.documento|documento_publico %}{% if doc %}<small>{{ doc }}</small>{% endif %}{% endwith %}
       </td>
       <td data-rotulo="Nº">{{ convenio.numero }}</td>
       <td data-rotulo="Vigência">
