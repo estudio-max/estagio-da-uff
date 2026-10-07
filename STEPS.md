@@ -1,6 +1,6 @@
 # STEPS — Sistema de Estágios UFF
 
-Estado em 06/10/2026: Fase 1a concluída (pipeline local verde). **Próxima: Fase 1b (importação), que depende das planilhas (D8).**
+Estado em 06/10/2026: Fases 1a e 1c concluídas. **Próximas: 1d (alertas, depende de D3) ou 1b (importação, depende de D8).**
 
 | Fase | Objetivo | Status | Complexidade |
 |---|---|---|---|
@@ -9,6 +9,8 @@ Estado em 06/10/2026: Fase 1a concluída (pipeline local verde). **Próxima: Fas
 | 2 | Solicitação externa via gov.br | Pendente (depende D1, D10) | Média |
 | 3 | TCE e ciclo do estágio | Fora do escopo atual | Alta |
 | 4 | Assinatura gov.br, SEI, SDC, sistema acadêmico | Fora do escopo atual | Alta |
+
+Toda fase entrega as melhorias sobre o SIGAA que lhe cabem (REQUIREMENTS §4.0) e só é concluída com elas testadas.
 
 ## Fase 0 — Fundação
 
@@ -23,7 +25,7 @@ Entregas em incrementos curtos, cada um mostrado na reunião semanal:
 
 1. **1a** ✅ — Modelo Concedente/Convênio/Etapa + interface interna de cadastro e edição + auditoria. (RF01, RF02, RF08). App `convenios`; cadastro pelo admin do Django; grupo "Divisão de Estágio"; vigência derivada com filtro; CPF/CNPJ (inclusive alfanumérico) com máscara opcional; vigência de no máximo 5 anos. 45 testes, cobertura de 98%. Para a Divisão usar: adicionar o usuário (com `is_staff`) ao grupo.
 2. **1b** — Importação das planilhas. (RF07) — depende de D8.
-3. **1c** — Página pública com busca, só campos públicos. (RF03, RF04) — depende de D2.
+3. **1c** ✅ — Página pública com busca, só campos públicos. (RF03, RF04, MS06, MS07 parcial). Lista em `/` com busca por nome, CNPJ (com ou sem máscara), nº do convênio e processo; filtros por tipo e UF; paginação; detalhe em `/convenios/<id>/`. Campos públicos espelham o estagio.uff.br; CPF nunca aparece nem é buscável. 56 testes, cobertura de 98%.
 4. **1d** — Job diário de alertas. (RF05) — depende de D3.
 5. **1e** — Painéis estratégicos. (RF06) — depende de D4.
 

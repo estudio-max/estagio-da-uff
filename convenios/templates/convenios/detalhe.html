@@ -1,0 +1,40 @@
+{% extends "convenios/base.html" %}
+{% load convenios_publicos %}
+
+{% block titulo %}{{ convenio.concedente.razao_social }}{% endblock %}
+
+{% block estilo %}
+<style>
+  .cartao { background: var(--superficie); border: 1px solid var(--borda); border-radius: 8px; padding: 24px; }
+  .cartao h2 { margin: 0 0 4px; font-size: 1.3rem; }
+  dl { display: grid; grid-template-columns: 220px 1fr; gap: 10px 16px; margin: 20px 0 0; }
+  dt { color: var(--suave); font-weight: 600; }
+  dd { margin: 0; }
+  @media (max-width: 640px) { dl { grid-template-columns: 1fr; gap: 2px; } dd { margin-bottom: 10px; } }
+</style>
+{% endblock %}
+
+{% block conteudo %}
+<p><a href="{% url 'convenios:lista' %}">← Todos os convênios</a></p>
+<article class="cartao">
+  <h2>{{ convenio.concedente.razao_social }}</h2>
+  {% if convenio.vigencia == "a_iniciar" %}
+    <span class="selo selo-futuro">A partir de {{ convenio.inicio_vigencia|date:"d/m/Y" }}</span>
+  {% else %}
+    <span class="selo">Vigente</span>
+  {% endif %}
+  <dl>
+    {% if convenio.concedente.nome_fantasia %}<dt>Nome fantasia</dt><dd>{{ convenio.concedente.nome_fantasia }}</dd>{% endif %}
+    <dt>Nº do convênio</dt><dd>{{ convenio.numero }}</dd>
+    <dt>Início do convênio</dt><dd>{{ convenio.inicio_vigencia|date:"l, d \d\e F \d\e Y" }}</dd>
+    <dt>Término do convênio</dt><dd>{{ convenio.fim_vigencia|date:"l, d \d\e F \d\e Y" }}</dd>
+    {% if convenio.processo_sei %}<dt>Nº do processo</dt><dd>{{ convenio.processo_sei }}</dd>{% endif %}
+    <dt>Ano</dt><dd>{{ convenio.inicio_vigencia|date:"Y" }}</dd>
+    {% with cnpj=convenio.concedente.documento|cnpj_publico %}{% if cnpj %}<dt>CNPJ</dt><dd>{{ cnpj }}</dd>{% endif %}{% endwith %}
+    <dt>Tipo da instituição</dt><dd>{{ convenio.concedente.get_tipo_display }}</dd>
+    {% if convenio.concedente.ramo_atividade %}<dt>Ramo de atividade</dt><dd>{{ convenio.concedente.ramo_atividade }}</dd>{% endif %}
+    <dt>Cidade</dt><dd>{{ convenio.concedente.cidade }}/{{ convenio.concedente.uf }}</dd>
+    {% if convenio.objeto %}<dt>Objeto</dt><dd>{{ convenio.objeto|linebreaksbr }}</dd>{% endif %}
+  </dl>
+</article>
+{% endblock %}
