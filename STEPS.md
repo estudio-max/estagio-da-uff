@@ -10,6 +10,8 @@ Estado em 06/10/2026: Fase 1a concluída (pipeline local verde). **Próxima: Fas
 | 3 | TCE e ciclo do estágio | Fora do escopo atual | Alta |
 | 4 | Assinatura gov.br, SEI, SDC, sistema acadêmico | Fora do escopo atual | Alta |
 
+Toda fase entrega as melhorias sobre o SIGAA que lhe cabem (REQUIREMENTS §4.0) e só é concluída com elas testadas.
+
 ## Fase 0 — Fundação
 
 - **Inclui**: repositório git, projeto no framework escolhido, Postgres em container, lint/formatação/tipagem, testes rodando, pipeline de CI, `.env.example`.

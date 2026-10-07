@@ -9,6 +9,8 @@ Leia antes de qualquer tarefa:
 - `ARCHITECTURE.md`: como está construído e as decisões (A1…)
 - `STEPS.md`: fase atual e incremento em andamento
 
+As **melhorias em relação ao SIGAA** (`REQUIREMENTS.md` §4.0, IDs MS01…) são requisito fundamental do projeto. Toda fase entrega as que lhe cabem, com teste. Nenhuma funcionalidade nova pode reproduzir uma falha listada ali.
+
 Não implemente nada que esteja fora da fase atual do `STEPS.md`. Se o assunto ainda é uma dúvida pendente (D#), não invente a regra: pergunte ao desenvolvedor.
 
 ## Fluxo de trabalho em equipe

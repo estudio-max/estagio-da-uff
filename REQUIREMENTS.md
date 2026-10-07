@@ -82,6 +82,22 @@ Para fases futuras (fonte: Lei 11.788/2008 e páginas da PROGRAD — confirmar c
 - Matrícula ativa como pré-condição para início e continuidade.
 - Convênio com minuta externa exige ratificação pelos Conselhos Superiores.
 
+## 4.0 Melhorias em relação ao SIGAA (requisito fundamental)
+
+O SIGAA é a referência de fluxo (ARCHITECTURE A7), mas **superar as falhas dele é o motivo de existir deste sistema**. Cada fase precisa entregar as melhorias que lhe cabem, e cada uma tem critério de aceitação testável. As falhas de origem estão documentadas na seção 4.3.
+
+| ID | Falha no SIGAA | Melhoria exigida | Critério de aceitação | Fase | Status |
+|---|---|---|---|---|---|
+| MS01 | A coordenação não fica sabendo de um novo pré-cadastro; o estudante precisa avisar por email | Quem tem a próxima ação recebe aviso automático (email e painel) | Toda mudança de etapa gera notificação ao responsável seguinte, verificada em teste | 2, 3 | Pendente |
+| MS02 | SIGAA e SIPAC não se integram: o termo é baixado de um e enviado ao outro, nos dois sentidos | O documento é gerado, assinado e arquivado dentro do sistema | Nenhum passo do fluxo exige baixar e reenviar arquivo | 3, 4 | Pendente |
+| MS03 | Assinantes externos precisam criar conta no SIPAC antes | O externo entra com gov.br, sem cadastro prévio | Supervisor ou concedente assina na primeira visita, só com gov.br | 2, 4 | Pendente |
+| MS04 | Ninguém vê quem falta assinar (a dica oficial é o estudante assinar por último) | Todos os envolvidos veem o status de cada assinatura | Painel do processo lista assinado/pendente por parte, para todas as partes | 3 | Pendente |
+| MS05 | É preciso começar com 10 dias de antecedência por causa da tramitação | O tempo de tramitação é medido e exibido, para poder ser reduzido | Painel mostra o tempo médio entre o pedido e a ativação | 1e, 3 | Pendente |
+| MS06 | A consulta de convênio exige login no SIGAA | Qualquer pessoa ou empresa consulta os convênios vigentes sem login | Página pública sem login, com busca por nome, CNPJ e número | 1c | Implementado |
+| MS07 | Empresa sem convênio só descobre o caminho por formulário perdido no site do curso | A página pública orienta como pedir convênio quando a busca não encontra nada | Busca sem resultado mostra o caminho para solicitar | 1c (texto), 2 (fluxo) | Parcial |
+
+Ao propor ou revisar qualquer funcionalidade, verifique se ela reproduz uma dessas falhas. Se reproduzir, a falha vira item novo nesta tabela.
+
 ## 4.1 Campos do convênio no sistema atual (estagio.uff.br, Drupal)
 
 Levantamento feito em 06/10/2026 a partir da página pública e do formulário "Editar Convenio". Ele descreve o sistema atual e não é uma decisão de modelo.
