@@ -1,12 +1,21 @@
+from datetime import timedelta
 from typing import cast
 
 from django.contrib import admin
 from django.db import models
 from django.db.models import QuerySet
 from django.http import HttpRequest
+from django.utils import timezone
 
 from convenios.documentos import normalizar
-from convenios.models import Concedente, Convenio, ConvenioQuerySet, EtapaConvenio, Vigencia
+from convenios.models import (
+    AlertaVencimento,
+    Concedente,
+    Convenio,
+    ConvenioQuerySet,
+    EtapaConvenio,
+    Vigencia,
+)
 
 admin.site.site_header = "Sistema de Estágios UFF"
 admin.site.site_title = "Estágios UFF"
@@ -47,6 +56,42 @@ class VigenciaFilter(admin.SimpleListFilter):
         return queryset
 
 
+class VencimentoFilter(admin.SimpleListFilter):
+    """RF05 no painel: convênios vigentes que vencem nos próximos N dias."""
+
+    title = "vence em"
+    parameter_name = "vence_em"
+
+    def lookups(self, request: HttpRequest, _model_admin: object) -> list[tuple[str, str]]:
+        return [(str(d), f"até {d} dias") for d in (30, 90, 180, 365)]
+
+    def queryset(self, request: HttpRequest, queryset: QuerySet[Convenio]) -> QuerySet[Convenio]:
+        if (valor := self.value()) and valor.isdigit():
+            hoje = timezone.localdate()
+            limite = hoje + timedelta(days=int(valor))
+            return (
+                cast(ConvenioQuerySet, queryset)
+                .com_vigencia(Vigencia.VIGENTE, hoje)
+                .filter(fim_vigencia__lte=limite)
+            )
+        return queryset
+
+
+class AlertaInline(admin.TabularInline[AlertaVencimento, Convenio]):
+    model = AlertaVencimento
+    extra = 0
+    can_delete = False
+    fields = ("antecedencia_dias", "fim_vigencia", "enviado_em")
+    readonly_fields = fields
+    verbose_name_plural = "alertas de vencimento enviados"
+
+    def has_add_permission(self, request: HttpRequest, obj: object = None) -> bool:
+        return False
+
+    def has_change_permission(self, request: HttpRequest, obj: object = None) -> bool:
+        return False
+
+
 class EtapaInline(admin.TabularInline[EtapaConvenio, Convenio]):
     model = EtapaConvenio
     extra = 1
@@ -61,8 +106,16 @@ class ConvenioAdmin(admin.ModelAdmin[Convenio]):
         "fim_vigencia",
         "situacao",
         "vigencia_atual",
+        "dias_para_vencer",
     ]
-    list_filter = [VigenciaFilter, "situacao", "concedente__tipo", "minuta", "origem"]
+    list_filter = [
+        VigenciaFilter,
+        VencimentoFilter,
+        "situacao",
+        "concedente__tipo",
+        "minuta",
+        "origem",
+    ]
     search_fields = [
         "numero",
         "processo_sei",
@@ -73,7 +126,7 @@ class ConvenioAdmin(admin.ModelAdmin[Convenio]):
     autocomplete_fields = ["concedente"]
     formfield_overrides = {models.URLField: {"assume_scheme": "https"}}
     date_hierarchy = "fim_vigencia"
-    inlines = [EtapaInline]
+    inlines = [EtapaInline, AlertaInline]
     readonly_fields = ["criado_em", "atualizado_em"]
     fieldsets = [
         (None, {"fields": ["concedente", "numero", "processo_sei", "situacao"]}),
@@ -91,3 +144,9 @@ class ConvenioAdmin(admin.ModelAdmin[Convenio]):
     @admin.display(description="vigência")
     def vigencia_atual(self, obj: Convenio) -> str:
         return obj.vigencia().label
+
+    @admin.display(description="dias para vencer", ordering="fim_vigencia")
+    def dias_para_vencer(self, obj: Convenio) -> int | None:
+        if obj.vigencia() != Vigencia.VIGENTE or obj.fim_vigencia is None:
+            return None
+        return (obj.fim_vigencia - timezone.localdate()).days

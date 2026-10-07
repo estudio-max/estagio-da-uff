@@ -220,6 +220,27 @@ class Convenio(models.Model):
         return Vigencia.VIGENTE
 
 
+class AlertaVencimento(models.Model):
+    """Aviso enviado (RF05). O fim da vigência entra na chave: renovar reinicia os avisos."""
+
+    convenio = models.ForeignKey(Convenio, on_delete=models.CASCADE, related_name="alertas")
+    fim_vigencia = models.DateField()
+    antecedencia_dias = models.PositiveIntegerField()
+    enviado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "alerta de vencimento"
+        verbose_name_plural = "alertas de vencimento"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["convenio", "fim_vigencia", "antecedencia_dias"], name="alerta_unico"
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.convenio} — aviso de {self.antecedencia_dias} dias"
+
+
 class EtapaConvenio(models.Model):
     """RF02: andamento interno. Quem registrou fica no histórico do admin (RF08)."""
 

@@ -72,6 +72,11 @@ def dados_convenio(concedente: Concedente, **extra: str) -> dict[str, str]:
         "etapas-0-etapa": "documentacao_recebida",
         "etapas-0-data": "01/09/2026",
         "etapas-0-observacao": "",
+        # Inline só de leitura dos alertas: o navegador sempre envia o bloco de controle.
+        "alertas-TOTAL_FORMS": "0",
+        "alertas-INITIAL_FORMS": "0",
+        "alertas-MIN_NUM_FORMS": "0",
+        "alertas-MAX_NUM_FORMS": "0",
         **extra,
     }
 
