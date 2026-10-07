@@ -37,7 +37,7 @@ Diretriz da reunião: **separar o "o quê" do "como"**. O "o quê" do processo a
 | RF04 | Página pública com convênios vigentes, com busca por nome/CNPJ/tipo. Convênio entra na página automaticamente ao ser finalizado. | Implementado (1c) |
 | RF05 | Alertas de vencimento para a Divisão (e-mail e painel), com antecedências configuráveis. | Implementado (1d) |
 | RF06 | Painéis estratégicos: vigentes, encerrados/vencidos, vencendo em 30/90/180 dias, em tramitação, por tipo de concedente. Visibilidade (pública/privada) definida pela PROGRAD. | Implementado (1e), restrito à Divisão até D4 |
-| RF07 | Importar os dados atuais das planilhas (públicos e privados) e da página do site. | Pendente |
+| RF07 | Importar os dados atuais das planilhas (públicos e privados) e da página do site. | Implementado (1b), a partir do XML do Drupal |
 | RF08 | Histórico de alterações de cada convênio (quem, quando, o quê). | Implementado (1a) |
 
 ### Média prioridade — Fase 2 (entrada externa)
@@ -66,7 +66,7 @@ Aplicáveis ao MVP:
 
 - RN01 — Convênio aparece na página pública quando finalizado e com vigência em curso ou a iniciar; o "a iniciar" leva selo "A partir de dd/mm/aaaa" (D18).
 - RN02 — Convênio com fim de vigência passado muda para "vencido" automaticamente (derivado da data, não editado à mão).
-- RN03 — CNPJ válido (dígito verificador) e único por concedente. Aceita o CNPJ alfanumérico da Receita (emitido desde julho de 2026).
+- RN03 — CNPJ válido (dígito verificador) e único por concedente. Obrigatório no cadastro e na edição; só a importação aceita concedente sem documento (D20). Aceita o CNPJ alfanumérico da Receita (emitido desde julho de 2026).
 - RN04 — Apenas a Divisão de Estágio escreve no MVP (grupo "Divisão de Estágio"). Convênio e concedente não são excluídos: convênio errado vira "cancelado".
 - RN06 — Concedente identificada por CPF (pessoa física, ex.: profissional liberal) ou CNPJ, com dígito verificador validado. *Premissa, D14.*
 - RN07 — Vigência do convênio de no máximo 5 anos. *Premissa, D15.*
@@ -120,6 +120,17 @@ Levantamento feito em 06/10/2026 a partir da página pública e do formulário "
 | PUBLICADO | não | status do convênio; substituído por `situacao` + vigência derivada (RN02) |
 | Resolução CEP | não | número e link da norma interna da UFF que autorizou o convênio |
 | Email | não | |
+
+## 4.1.1 Qualidade dos dados reais (importação de 07/10/2026)
+
+Exportação XML do Drupal com 4.190 convênios. Resultado da importação no banco local:
+
+- **4.133 importados** (1.934 vigentes, 2.199 vencidos), 4.073 concedentes.
+- **57 rejeitados**, listados no relatório CSV com o motivo: 30 nº de convênio repetido, 10 término antes do início, 10 sem datas, 6 CNPJ com dígito verificador inválido, 1 sem número.
+- **1.921 sem CNPJ** (quase todos vencidos, de 2015 a 2021): entram com a concedente sem documento (D20).
+- **103 com vigência acima de 5 anos**, um deles até 2099: evidência para a D15.
+- Tipo da instituição em 14 grafias (D11); 13 UFs inválidas ("EUA", "BH", vazio); cidades com estado, CNPJ e erros de digitação no lugar do município.
+- O XML usa ano de 2 dígitos (`30/09/31`); a importação lê sempre como 20aa.
 
 ## 4.2 Referência externa: Central de Estágios do SIGAA (UFOB)
 
@@ -207,7 +218,7 @@ TCE e ciclo do estágio, integração com sistema acadêmico, assinatura digital
 | D7 | Etapas exatas do processo interno, nos dois modelos (empresa procura UFF / UFF procura instituição pública). | Passo a passo prometido pela Divisão. | PROGRAD |
 | D8 | Formato e qualidade das planilhas atuais (colunas, duplicatas). | — | PROGRAD envia cópia |
 | D9 | Exigências do SDC sobre guarda de documentos. | Aguardar participação do SDC. | SDC |
-| D11 | ~~Qual vocabulário de tipo vale?~~ **Resolvida em 06/10/2026: os 9 tipos da RN05.** Falta a tabela de-para dos tipos do Drupal para a importação (1b). | — | PROGRAD |
+| D11 | ~~Qual vocabulário de tipo vale?~~ **Resolvida em 06/10/2026: os 9 tipos da RN05.** **Premissa de conversão (07/10/2026, `importacao.MAPA_TIPOS`):** Privada→Empresa Privada; Pública→Órgãos públicos; Integradora/Agente de Integração→Agente de Integração; ONG/OSCIP/Organização da Sociedade Civil→ONGs e OSCIPs; Profissional Liberal→Profissional Liberal; resto→Outros. O Drupal não distingue microempresa nem instituição de ensino: a PROGRAD revisa. | — | PROGRAD |
 | D12 | Ramo de Atividade é o CNAE? | (a) CNAE oficial; (b) lista própria | PROGRAD |
 | D13 | ~~PUBLICADO e Resolução CEP~~ resolvidas em 06/10/2026 (ver 4.1). Pendente: o Objeto padrão pode virar o valor sugerido? A Resolução CEP é pública? | — | PROGRAD |
 | D14 | ~~CPF para profissional liberal?~~ **Premissa adotada em 06/10/2026:** concedente aceita CPF ou CNPJ, como no SIGAA (mesma legislação federal). Confirmar com a PROGRAD. | — | PROGRAD |
@@ -215,5 +226,7 @@ TCE e ciclo do estágio, integração com sistema acadêmico, assinatura digital
 | D16 | ~~Adotar o SIGAA?~~ **Resolvida em 06/10/2026:** a UFF não tem acesso ao SIGAA. Seguimos com sistema próprio, usando a Central de Estágios do SIGAA como referência de fluxo (seção 4.2). | — | — |
 | D17 | O histórico (RF08) precisa mostrar o valor anterior de cada campo, ou basta saber quem mudou, quando e quais campos? | (a) basta o histórico nativo do admin (atual); (b) adotar django-simple-history | PROGRAD |
 | D18 | ~~Convênio "a iniciar" na página pública?~~ **Resolvida em 06/10/2026:** aparece, com selo "A partir de dd/mm/aaaa". | — | — |
-| D19 | Convênios finalizados antes da 1e (e os importados na 1b) não têm data de finalização e ficam fora do tempo de tramitação. Usar a data da etapa "Extrato publicado no BS" como finalização, quando houver? | (a) sim, na importação; (b) deixar fora | PROGRAD |
+| D19 | ~~Data de finalização dos antigos?~~ **Decidido em 07/10/2026:** importados ficam sem data e fora do tempo de tramitação, porque o início da tramitação também é desconhecido e qualquer duração seria inventada. | — | — |
+| D20 | 1.921 convênios importados não têm CNPJ (quase todos vencidos). **Premissa adotada:** entram com a concedente sem documento, agrupada pelo nome; o admin exige o CNPJ ao editar. A Divisão quer completar os vigentes (28)? | (a) completar só os vigentes; (b) completar todos; (c) apagar os vencidos sem CNPJ | PROGRAD |
+| D21 | Na primeira execução dos alertas em produção, 471 convênios cairiam num único email. Como começar? | (a) mandar assim, como relatório inicial; (b) começar só com a faixa de 30 dias; (c) marcar os atuais como já avisados | PROGRAD |
 | D10 | Credenciamento gov.br da UFF para login único (Fase 2) já existe? | — | STI |
