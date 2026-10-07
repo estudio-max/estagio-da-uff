@@ -62,7 +62,7 @@
     {{ paginator.count }} convênio{{ paginator.count|pluralize }} encontrado{{ paginator.count|pluralize }}
     · <a href="{% url 'convenios:lista' %}">limpar busca</a>
   {% else %}
-    {{ total_vigentes }} convênio{{ total_vigentes|pluralize }} vigente{{ total_vigentes|pluralize }}
+    {{ total_vigentes }} convênio{{ total_vigentes|pluralize }} vigente{{ total_vigentes|pluralize }}{% if total_a_iniciar %} · {{ total_a_iniciar }} a iniciar{% endif %}
   {% endif %}
 </p>
 
@@ -80,7 +80,10 @@
         {% with cnpj=convenio.concedente.documento|cnpj_publico %}{% if cnpj %}<small>CNPJ {{ cnpj }}</small>{% endif %}{% endwith %}
       </td>
       <td data-rotulo="Nº">{{ convenio.numero }}</td>
-      <td data-rotulo="Vigência">{{ convenio.inicio_vigencia|date:"d/m/Y" }} a {{ convenio.fim_vigencia|date:"d/m/Y" }}</td>
+      <td data-rotulo="Vigência">
+        {{ convenio.inicio_vigencia|date:"d/m/Y" }} a {{ convenio.fim_vigencia|date:"d/m/Y" }}
+        {% if convenio.vigencia == "a_iniciar" %}<br><span class="selo selo-futuro">A partir de {{ convenio.inicio_vigencia|date:"d/m/Y" }}</span>{% endif %}
+      </td>
       <td data-rotulo="Local">{{ convenio.concedente.cidade }}/{{ convenio.concedente.uf }}</td>
       <td data-rotulo="Tipo">{{ convenio.concedente.get_tipo_display }}</td>
     </tr>

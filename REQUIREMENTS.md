@@ -64,7 +64,7 @@ Diretriz da reunião: **separar o "o quê" do "como"**. O "o quê" do processo a
 
 Aplicáveis ao MVP:
 
-- RN01 — Convênio aparece na página pública somente quando finalizado e com vigência em curso.
+- RN01 — Convênio aparece na página pública quando finalizado e com vigência em curso ou a iniciar; o "a iniciar" leva selo "A partir de dd/mm/aaaa" (D18).
 - RN02 — Convênio com fim de vigência passado muda para "vencido" automaticamente (derivado da data, não editado à mão).
 - RN03 — CNPJ válido (dígito verificador) e único por concedente. Aceita o CNPJ alfanumérico da Receita (emitido desde julho de 2026).
 - RN04 — Apenas a Divisão de Estágio escreve no MVP (grupo "Divisão de Estágio"). Convênio e concedente não são excluídos: convênio errado vira "cancelado".
@@ -214,5 +214,5 @@ TCE e ciclo do estágio, integração com sistema acadêmico, assinatura digital
 | D15 | ~~Vigência máxima de 5 anos?~~ **Premissa adotada em 06/10/2026:** o cadastro bloqueia vigência acima de 5 anos. Confirmar com a PROGRAD. | — | PROGRAD |
 | D16 | ~~Adotar o SIGAA?~~ **Resolvida em 06/10/2026:** a UFF não tem acesso ao SIGAA. Seguimos com sistema próprio, usando a Central de Estágios do SIGAA como referência de fluxo (seção 4.2). | — | — |
 | D17 | O histórico (RF08) precisa mostrar o valor anterior de cada campo, ou basta saber quem mudou, quando e quais campos? | (a) basta o histórico nativo do admin (atual); (b) adotar django-simple-history | PROGRAD |
-| D18 | Convênio finalizado que ainda não começou ("a iniciar") deve aparecer na página pública? | (a) não, só vigentes (atual, RN01); (b) sim, com selo "a partir de dd/mm" | PROGRAD |
+| D18 | ~~Convênio "a iniciar" na página pública?~~ **Resolvida em 06/10/2026:** aparece, com selo "A partir de dd/mm/aaaa". | — | — |
 | D10 | Credenciamento gov.br da UFF para login único (Fase 2) já existe? | — | STI |

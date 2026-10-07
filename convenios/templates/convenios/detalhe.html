@@ -7,8 +7,6 @@
 <style>
   .cartao { background: var(--superficie); border: 1px solid var(--borda); border-radius: 8px; padding: 24px; }
   .cartao h2 { margin: 0 0 4px; font-size: 1.3rem; }
-  .selo { display: inline-block; background: var(--destaque); color: var(--marca); font-weight: 600;
-    font-size: .8rem; padding: 2px 10px; border-radius: 999px; }
   dl { display: grid; grid-template-columns: 220px 1fr; gap: 10px 16px; margin: 20px 0 0; }
   dt { color: var(--suave); font-weight: 600; }
   dd { margin: 0; }
@@ -20,7 +18,11 @@
 <p><a href="{% url 'convenios:lista' %}">← Todos os convênios</a></p>
 <article class="cartao">
   <h2>{{ convenio.concedente.razao_social }}</h2>
-  <span class="selo">Vigente</span>
+  {% if convenio.vigencia == "a_iniciar" %}
+    <span class="selo selo-futuro">A partir de {{ convenio.inicio_vigencia|date:"d/m/Y" }}</span>
+  {% else %}
+    <span class="selo">Vigente</span>
+  {% endif %}
   <dl>
     {% if convenio.concedente.nome_fantasia %}<dt>Nome fantasia</dt><dd>{{ convenio.concedente.nome_fantasia }}</dd>{% endif %}
     <dt>Nº do convênio</dt><dd>{{ convenio.numero }}</dd>

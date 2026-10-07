@@ -1,7 +1,8 @@
 """Página pública de convênios (RF03, RF04, RN01).
 
-Só convênios finalizados e com vigência em curso. Os campos expostos ficam nos templates;
-observações internas, email, etapas, minuta, origem e Resolução CEP nunca saem daqui.
+Convênios finalizados vigentes ou a iniciar (estes com selo "a partir de", D18).
+Os campos expostos ficam nos templates; observações internas, email, etapas, minuta,
+origem e Resolução CEP nunca saem daqui.
 """
 
 from typing import Any
@@ -14,7 +15,10 @@ from convenios.models import UFS, Convenio, ConvenioQuerySet, TipoConcedente, Vi
 
 
 def convenios_publicos() -> ConvenioQuerySet:
-    return Convenio.objects.com_vigencia(Vigencia.VIGENTE).select_related("concedente")
+    convenios = Convenio.objects.com_vigencia(Vigencia.VIGENTE) | Convenio.objects.com_vigencia(
+        Vigencia.A_INICIAR
+    )
+    return convenios.select_related("concedente")
 
 
 class ListaPublica(ListView[Convenio]):
@@ -53,7 +57,8 @@ class ListaPublica(ListView[Convenio]):
             "busca": self.request.GET.get("q", ""),
             "tipo_atual": self.request.GET.get("tipo", ""),
             "uf_atual": self.request.GET.get("uf", ""),
-            "total_vigentes": convenios_publicos().count(),
+            "total_vigentes": Convenio.objects.com_vigencia(Vigencia.VIGENTE).count(),
+            "total_a_iniciar": Convenio.objects.com_vigencia(Vigencia.A_INICIAR).count(),
         }
         # Mantém filtros ao trocar de página.
         parametros = self.request.GET.copy()
@@ -67,5 +72,5 @@ class DetalhePublico(DetailView[Convenio]):
     context_object_name = "convenio"
 
     def get_queryset(self) -> ConvenioQuerySet:
-        # Convênio fora da vigência dá 404, sem revelar que existe.
+        # Convênio não público dá 404, sem revelar que existe.
         return convenios_publicos()

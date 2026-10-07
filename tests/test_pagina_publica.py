@@ -37,7 +37,7 @@ def pagina(client: Client, url: str = "/", **params: str) -> str:
     return resposta.content.decode()
 
 
-# --- RN01: só vigentes ---
+# --- RN01: só vigentes e a iniciar ---
 
 
 @pytest.mark.integration
@@ -57,9 +57,10 @@ def test_lista_so_convenios_vigentes(client: Client) -> None:
 
     html = pagina(client)
     assert "PR-VIGENTE/2026" in html
-    for oculto in ["TRAMITANDO", "CANCELADO", "VENCIDO", "FUTURO"]:
+    assert "PR-FUTURO/2026" in html  # D18: a iniciar aparece, com selo
+    for oculto in ["TRAMITANDO", "CANCELADO", "VENCIDO"]:
         assert oculto not in html
-    assert "1 convênio vigente" in html
+    assert "1 convênio vigente · 1 a iniciar" in html
 
 
 @pytest.mark.integration
@@ -195,3 +196,23 @@ def test_paginacao_mantem_os_filtros(client: Client) -> None:
     assert "Página 1 de 2" in html
     assert "uf=RJ&amp;page=2" in html
     assert "Página 2 de 2" in pagina(client, uf="RJ", page="2")
+
+
+@pytest.mark.e2e
+@pytest.mark.django_db
+def test_convenio_a_iniciar_tem_selo_com_a_data_de_inicio(client: Client) -> None:
+    inicio = HOJE + timedelta(days=20)
+    c = convenio(concedente(), inicio_vigencia=inicio)
+    selo = f"A partir de {inicio:%d/%m/%Y}"
+    assert selo in pagina(client)
+    detalhe = pagina(client, f"/convenios/{c.pk}/")
+    assert selo in detalhe
+    assert ">Vigente<" not in detalhe
+
+
+@pytest.mark.e2e
+@pytest.mark.django_db
+def test_convenio_vigente_nao_tem_selo_de_futuro(client: Client) -> None:
+    c = convenio(concedente())
+    assert "A partir de" not in pagina(client)
+    assert ">Vigente<" in pagina(client, f"/convenios/{c.pk}/")
