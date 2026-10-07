@@ -168,6 +168,13 @@ class Convenio(models.Model):
     observacoes_internas = models.TextField("observações internas", blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
+    finalizado_em = models.DateField(
+        "finalizado em",
+        null=True,
+        blank=True,
+        editable=False,
+        help_text="Preenchido ao marcar como finalizado; base do tempo de tramitação (MS05).",
+    )
 
     objects = ConvenioQuerySet.as_manager()
 
@@ -198,6 +205,13 @@ class Convenio(models.Model):
 
     def __str__(self) -> str:
         return f"{self.numero or 'sem número'} — {self.concedente}"
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        if self.situacao == Situacao.FINALIZADO and self.finalizado_em is None:
+            self.finalizado_em = timezone.localdate()
+        elif self.situacao != Situacao.FINALIZADO:
+            self.finalizado_em = None
+        super().save(*args, **kwargs)
 
     def clean(self) -> None:
         if (

@@ -2,7 +2,7 @@
 
 ## 1. Arquitetura atual
 
-Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin a validação de CPF/CNPJ (`documentos.py`) a página pública (`views.py`, `templates/convenios/`), sem JavaScript e com CSS próprio, e os alertas de vencimento (`alertas.py` + comando `enviar_alertas_vencimento`). Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
+Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin a validação de CPF/CNPJ (`documentos.py`) a página pública (`views.py`, `templates/convenios/`), sem JavaScript e com CSS próprio, os alertas de vencimento (`alertas.py` + comando `enviar_alertas_vencimento`) e o painel de indicadores (`painel.py`, página extra do admin). Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
 
 O processo de negócio hoje roda sobre:
 
@@ -71,6 +71,7 @@ erDiagram
     date fim_vigencia
     enum situacao "em_tramitacao|finalizado|cancelado"
     text observacoes_internas
+    date finalizado_em "automático (MS05)"
   }
   ETAPA_CONVENIO {
     int id

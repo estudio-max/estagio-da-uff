@@ -2,11 +2,15 @@ from datetime import timedelta
 from typing import cast
 
 from django.contrib import admin
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import QuerySet
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
+from django.template.response import TemplateResponse
+from django.urls import URLPattern, path
 from django.utils import timezone
 
+from convenios import painel
 from convenios.documentos import normalizar
 from convenios.models import (
     AlertaVencimento,
@@ -140,6 +144,27 @@ class ConvenioAdmin(admin.ModelAdmin[Convenio]):
             {"fields": ["observacoes_internas", "criado_em", "atualizado_em"]},
         ),
     ]
+
+    def get_urls(self) -> list[URLPattern]:
+        rota = path(
+            "painel/",
+            self.admin_site.admin_view(self.painel_view),
+            name="convenios_convenio_painel",
+        )
+        return [rota, *super().get_urls()]
+
+    def painel_view(self, request: HttpRequest) -> HttpResponse:
+        """RF06/MS05. Restrito a quem vê convênios (D4: visibilidade pública pendente)."""
+        if not self.has_view_permission(request):
+            raise PermissionDenied
+        contexto = {
+            **self.admin_site.each_context(request),
+            "title": "Painel de convênios",
+            "opts": self.model._meta,
+            "indicadores": painel.calcular(timezone.localdate()),
+            "periodo_tramitacao": painel.PERIODO_TRAMITACAO_DIAS,
+        }
+        return TemplateResponse(request, "admin/convenios/convenio/painel.html", contexto)
 
     @admin.display(description="vigência")
     def vigencia_atual(self, obj: Convenio) -> str:

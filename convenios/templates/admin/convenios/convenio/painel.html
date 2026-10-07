@@ -1,0 +1,97 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  .painel { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .painel .module { margin: 0; }
+  .painel td.n, .painel th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .painel .nota { color: var(--body-quiet-color); padding: 8px 10px; margin: 0; }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Início</a>
+  › <a href="{% url 'admin:convenios_convenio_changelist' %}">Convênios</a>
+  › Painel
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="painel">
+
+  <div class="module">
+    <table style="width:100%">
+      <caption>Convênios por situação</caption>
+      <tbody>
+      {% for rotulo, n in indicadores.por_vigencia.items %}
+        <tr><th scope="row">{{ rotulo }}</th><td class="n">{{ n }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="module">
+    <table style="width:100%">
+      <caption>Vigentes que vencem</caption>
+      <tbody>
+      {% for dias, n in indicadores.vencendo.items %}
+        <tr>
+          <th scope="row"><a href="{% url 'admin:convenios_convenio_changelist' %}?vence_em={{ dias }}">nos próximos {{ dias }} dias</a></th>
+          <td class="n">{{ n }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="module">
+    <table style="width:100%">
+      <caption>Tempo de tramitação</caption>
+      <tbody>
+      {% if indicadores.tramitacao_amostra %}
+        <tr><th scope="row">Média</th><td class="n">{{ indicadores.tramitacao_media|floatformat:0 }} dias</td></tr>
+        <tr><th scope="row">Mediana</th><td class="n">{{ indicadores.tramitacao_mediana|floatformat:0 }} dias</td></tr>
+        <tr><th scope="row">Convênios considerados</th><td class="n">{{ indicadores.tramitacao_amostra }}</td></tr>
+      {% else %}
+        <tr><td>Nenhum convênio finalizado no período.</td></tr>
+      {% endif %}
+      </tbody>
+    </table>
+    <p class="nota">Da primeira etapa registrada (ou do cadastro) até a finalização, nos últimos {{ periodo_tramitacao }} dias.</p>
+  </div>
+
+  <div class="module">
+    <table style="width:100%">
+      <caption>Vigentes por tipo de concedente</caption>
+      <tbody>
+      {% for rotulo, n in indicadores.por_tipo %}
+        <tr><th scope="row">{{ rotulo }}</th><td class="n">{{ n }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="module" style="grid-column: 1 / -1">
+    <table style="width:100%">
+      <caption>Em tramitação há mais tempo</caption>
+      {% if indicadores.parados %}
+      <thead><tr><th>Convênio</th><th>Concedente</th><th class="n">Dias em tramitação</th></tr></thead>
+      <tbody>
+      {% for p in indicadores.parados %}
+        <tr>
+          <td><a href="{% url 'admin:convenios_convenio_change' p.convenio.pk %}">{{ p.convenio.numero|default:"sem número" }}</a></td>
+          <td>{{ p.convenio.concedente }}</td>
+          <td class="n">{{ p.dias }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+      {% else %}
+      <tbody><tr><td>Nenhum convênio em tramitação.</td></tr></tbody>
+      {% endif %}
+    </table>
+  </div>
+
+</div>
+{% endblock %}

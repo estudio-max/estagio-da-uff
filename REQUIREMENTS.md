@@ -36,7 +36,7 @@ Diretriz da reunião: **separar o "o quê" do "como"**. O "o quê" do processo a
 | RF03 | Marcar, por campo, o que é público. Definição pela PROGRAD. Hoje é fixa no template, espelhando o site atual; CPF nunca é público. | Implementado (1c) |
 | RF04 | Página pública com convênios vigentes, com busca por nome/CNPJ/tipo. Convênio entra na página automaticamente ao ser finalizado. | Implementado (1c) |
 | RF05 | Alertas de vencimento para a Divisão (e-mail e painel), com antecedências configuráveis. | Implementado (1d) |
-| RF06 | Painéis estratégicos: vigentes, encerrados/vencidos, vencendo em 30/90/180 dias, em tramitação, por tipo de concedente. Visibilidade (pública/privada) definida pela PROGRAD. | Pendente |
+| RF06 | Painéis estratégicos: vigentes, encerrados/vencidos, vencendo em 30/90/180 dias, em tramitação, por tipo de concedente. Visibilidade (pública/privada) definida pela PROGRAD. | Implementado (1e), restrito à Divisão até D4 |
 | RF07 | Importar os dados atuais das planilhas (públicos e privados) e da página do site. | Pendente |
 | RF08 | Histórico de alterações de cada convênio (quem, quando, o quê). | Implementado (1a) |
 
@@ -92,7 +92,7 @@ O SIGAA é a referência de fluxo (ARCHITECTURE A7), mas **superar as falhas del
 | MS02 | SIGAA e SIPAC não se integram: o termo é baixado de um e enviado ao outro, nos dois sentidos | O documento é gerado, assinado e arquivado dentro do sistema | Nenhum passo do fluxo exige baixar e reenviar arquivo | 3, 4 | Pendente |
 | MS03 | Assinantes externos precisam criar conta no SIPAC antes | O externo entra com gov.br, sem cadastro prévio | Supervisor ou concedente assina na primeira visita, só com gov.br | 2, 4 | Pendente |
 | MS04 | Ninguém vê quem falta assinar (a dica oficial é o estudante assinar por último) | Todos os envolvidos veem o status de cada assinatura | Painel do processo lista assinado/pendente por parte, para todas as partes | 3 | Pendente |
-| MS05 | É preciso começar com 10 dias de antecedência por causa da tramitação | O tempo de tramitação é medido e exibido, para poder ser reduzido | Painel mostra o tempo médio entre o pedido e a ativação | 1e, 3 | Pendente |
+| MS05 | É preciso começar com 10 dias de antecedência por causa da tramitação | O tempo de tramitação é medido e exibido, para poder ser reduzido | Painel mostra o tempo médio entre o pedido e a ativação | 1e, 3 | Parcial (1e: convênios — média, mediana e lista dos parados; falta o TCE na Fase 3) |
 | MS06 | A consulta de convênio exige login no SIGAA | Qualquer pessoa ou empresa consulta os convênios vigentes sem login | Página pública sem login, com busca por nome, CNPJ e número | 1c | Implementado |
 | MS07 | Empresa sem convênio só descobre o caminho por formulário perdido no site do curso | A página pública orienta como pedir convênio quando a busca não encontra nada | Busca sem resultado mostra o caminho para solicitar | 1c (texto), 2 (fluxo) | Parcial |
 
@@ -215,4 +215,5 @@ TCE e ciclo do estágio, integração com sistema acadêmico, assinatura digital
 | D16 | ~~Adotar o SIGAA?~~ **Resolvida em 06/10/2026:** a UFF não tem acesso ao SIGAA. Seguimos com sistema próprio, usando a Central de Estágios do SIGAA como referência de fluxo (seção 4.2). | — | — |
 | D17 | O histórico (RF08) precisa mostrar o valor anterior de cada campo, ou basta saber quem mudou, quando e quais campos? | (a) basta o histórico nativo do admin (atual); (b) adotar django-simple-history | PROGRAD |
 | D18 | ~~Convênio "a iniciar" na página pública?~~ **Resolvida em 06/10/2026:** aparece, com selo "A partir de dd/mm/aaaa". | — | — |
+| D19 | Convênios finalizados antes da 1e (e os importados na 1b) não têm data de finalização e ficam fora do tempo de tramitação. Usar a data da etapa "Extrato publicado no BS" como finalização, quando houver? | (a) sim, na importação; (b) deixar fora | PROGRAD |
 | D10 | Credenciamento gov.br da UFF para login único (Fase 2) já existe? | — | STI |
