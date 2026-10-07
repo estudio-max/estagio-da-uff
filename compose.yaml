@@ -1,0 +1,14 @@
+# Postgres só para desenvolvimento local. Sem senha (trust): não exponha esta porta fora da sua máquina.
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: estagio
+      POSTGRES_USER: estagio
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:

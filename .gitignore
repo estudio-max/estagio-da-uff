@@ -3,3 +3,11 @@ __pycache__/
 *.pyc
 .venv/
 node_modules/
+staticfiles/
+.coverage
+coverage.xml
+htmlcov/
+reports/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
