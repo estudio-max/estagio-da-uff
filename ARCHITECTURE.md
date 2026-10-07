@@ -2,7 +2,9 @@
 
 ## 1. Arquitetura atual
 
-**Não há código.** O processo hoje roda sobre:
+Código: esqueleto Django (Fase 0). `config/` guarda as configurações (todas lidas de variáveis de ambiente) e `core/` tem o `/health/`. Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
+
+O processo de negócio hoje roda sobre:
 
 ```mermaid
 flowchart LR
@@ -48,7 +50,7 @@ erDiagram
     int id
     string cnpj UK
     string razao_social
-    enum tipo "privada|publica|ong|ies|liberal|agente_integracao"
+    enum tipo "ver REQUIREMENTS RN05 (9 tipos)"
   }
   CONVENIO {
     int id
@@ -100,7 +102,8 @@ erDiagram
 |---|---|---|
 | A1 | Banco relacional PostgreSQL | Proposta (consenso do brainstorming) |
 | A2 | Monólito com páginas server-side; SPA só se a interface exigir | Proposta |
-| A3 | Framework: **Django** recomendado (admin pronto cobre a interface interna do MVP, auth/ORM/migrações nativos, Python já usado na equipe). Alternativas: Laravel, NestJS. | **Pendente — D5**, depende do padrão da STI |
+| A3 | Django 5.2 LTS (admin pronto cobre a interface interna do MVP; auth/ORM/migrações nativos) | Decidida em 06/10/2026 |
+| A6 | Ferramentas: uv, ruff, mypy strict, vulture, pip-audit, pytest-django; pipeline único em `tools/ci.py` | Decidida |
 | A4 | SEI permanece processo oficial; sistema guarda nº do processo | Provisória — D1 |
 | A5 | Status de vigência derivado de datas | Proposta |
 

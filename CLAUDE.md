@@ -19,6 +19,11 @@ Não implemente nada que esteja fora da fase atual do `STEPS.md`. Se o assunto a
 - Nova decisão técnica entra como uma linha na tabela de decisões do `ARCHITECTURE.md`.
 - O PR só é aberto com o pipeline local verde, e o merge só acontece com o CI verde e a revisão de outro desenvolvedor.
 
+## Comandos
+
+- Pipeline completo antes de abrir o PR: `uv run python tools/ci.py`. O README lista as demais etapas.
+- Postgres local: `docker compose up -d db`.
+
 ## Regras
 
 - Português nos documentos, nas mensagens de commit e na interface; código e identificadores em inglês.

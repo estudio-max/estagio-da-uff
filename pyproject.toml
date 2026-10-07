@@ -1,0 +1,71 @@
+[project]
+name = "estagio-da-uff"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.2,<5.3",
+    "psycopg[binary]>=3.2",
+]
+
+[dependency-groups]
+dev = [
+    "django-stubs>=6.1.2",
+    "mypy>=2.4.0",
+    "pip-audit>=2.10.1",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pytest-django>=4.14.0",
+    "ruff>=0.16.10",
+    "vulture>=2.16",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+# E/F/W básicos, I imports, N nomes, UP modernização, B bugs, S segurança (bandit), DJ django, C90 complexidade
+select = ["E", "F", "W", "I", "N", "UP", "B", "S", "DJ", "C90", "SIM", "RUF"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S105", "S106"]
+
+[tool.mypy]
+strict = true
+plugins = ["mypy_django_plugin.main"]
+exclude = ["migrations/"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+testpaths = ["tests"]
+addopts = "--strict-markers"
+markers = [
+  "unit: isolado, sem banco",
+  "integration: usa banco ou vários módulos",
+  "security: autenticação, autorização, configuração segura",
+  "smoke: fluxo mínimo após mudança ou deploy",
+  "e2e: fluxo completo pelo HTTP",
+]
+
+[tool.coverage.run]
+source = ["config", "core"]
+omit = ["*/migrations/*", "config/asgi.py", "config/wsgi.py"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+
+[tool.vulture]
+paths = ["config", "core", "tools"]
+min_confidence = 80

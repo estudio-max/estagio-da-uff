@@ -1,10 +1,10 @@
 # STEPS — Sistema de Estágios UFF
 
-Estado em 06/10/2026: documentação inicial criada. Nenhum código. **Próxima: Fase 0, após validação deste plano.**
+Estado em 06/10/2026: Fase 0 concluída (pipeline local verde). **Próxima: Fase 1a.**
 
 | Fase | Objetivo | Status | Complexidade |
 |---|---|---|---|
-| 0 | Fundação | Pendente (aguarda D5, D6) | Baixa |
+| 0 | Fundação | Concluída | Baixa |
 | 1 | Convênios internos + página pública + alertas + painéis (MVP) | Pendente | Média |
 | 2 | Solicitação externa via gov.br | Pendente (depende D1, D10) | Média |
 | 3 | TCE e ciclo do estágio | Fora do escopo atual | Alta |
@@ -13,8 +13,9 @@ Estado em 06/10/2026: documentação inicial criada. Nenhum código. **Próxima:
 ## Fase 0 — Fundação
 
 - **Inclui**: repositório git, projeto no framework escolhido, Postgres em container, lint/formatação/tipagem, testes rodando, pipeline de CI, `.env.example`.
-- **Pré-requisitos**: D5 (stack) e D6 (login institucional) respondidas pela STI.
-- **Critério de conclusão**: `pipeline local` verde com um teste trivial; CI verde no primeiro PR.
+- **Feito**: Django 5.2 + Postgres 17 (Docker), ruff, mypy strict, vulture, pip-audit, pytest com marcadores por categoria, cobertura mínima de 90%, `check --deploy`, `tools/ci.py` e GitHub Actions. Endpoint `/health/`. Admin com login nativo do Django.
+- **Critério de conclusão**: pipeline local verde ✅; CI verde no primeiro PR.
+- **Ficou para depois**: SonarQube (depende da infraestrutura da STI); teste de mutação (entra na Fase 1, quando houver regra de negócio; ferramenta prevista: mutmut).
 
 ## Fase 1 — MVP de convênios
 

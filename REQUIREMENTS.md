@@ -31,7 +31,7 @@ Diretriz da reunião: **separar o "o quê" do "como"**. O "o quê" do processo a
 
 | ID | Requisito | Status |
 |---|---|---|
-| RF01 | Cadastrar convênio: concedente (razão social, CNPJ, tipo: privada, pública, ONG, IES, profissional liberal, agente de integração), nº do convênio, nº do processo SEI, modalidade de minuta (padrão UFF / externa), datas de início e fim de vigência, situação, observações internas. | Pendente |
+| RF01 | Cadastrar convênio: concedente (razão social, CNPJ, tipo — ver RN05), nº do convênio, nº do processo SEI, modalidade de minuta (padrão UFF / externa), datas de início e fim de vigência, situação, observações internas. | Pendente |
 | RF02 | Registrar o andamento interno do processo (etapas: documentação recebida, análise, termo preparado, assinatura concedente, assinatura pró-reitor, ratificação, publicação do extrato no BS, finalizado). | Pendente |
 | RF03 | Marcar, por campo, o que é público. Definição pela PROGRAD. | Pendente |
 | RF04 | Página pública com convênios vigentes, com busca por nome/CNPJ/tipo. Convênio entra na página automaticamente ao ser finalizado. | Pendente |
@@ -68,6 +68,7 @@ Aplicáveis ao MVP:
 - RN02 — Convênio com fim de vigência passado muda para "vencido" automaticamente (derivado da data, não editado à mão).
 - RN03 — CNPJ válido (dígito verificador) e único por concedente.
 - RN04 — Apenas a Divisão de Estágio escreve no MVP.
+- RN05 — Tipos de convênio (lista oficial do formulário atual da PROGRAD): Instituição de Ensino Privada; Empresa Privada; ONGs e OSCIPs; Órgãos dos Governos Federal, Estadual e Municipal; Profissional Liberal; Agente de Integração; Instituições de Ensino Públicas; Microempresas; Outros.
 
 Para fases futuras (fonte: Lei 11.788/2008 e páginas da PROGRAD — confirmar com a Divisão antes de implementar):
 
@@ -110,8 +111,8 @@ TCE e ciclo do estágio, integração com sistema acadêmico, assinatura digital
 | D2 | Quais campos do convênio são públicos? | Lista atual do site como ponto de partida. | PROGRAD |
 | D3 | Antecedências dos alertas de vencimento? | 12, 6, 3 e 1 mês (sugestão da reunião: "um ano, seis meses"). | PROGRAD |
 | D4 | Quais painéis são públicos? | STI sugere público; PROGRAD decide. | PROGRAD |
-| D5 | Stack tecnológica e hospedagem padrão da STI? | Ver ARCHITECTURE.md §6. | STI |
-| D6 | Login interno: idUFF/SSO existente? Protocolo (OIDC, CAS, LDAP)? | — | STI |
+| D5 | ~~Stack~~ Django decidido em 06/10/2026. Hospedagem: padrão da STI? | — | STI |
+| D6 | Login: gov.br ou idUFF (provável), a definir. | Até lá, login nativo do Django; o escolhido entra como backend de autenticação sem reestruturar. | STI |
 | D7 | Etapas exatas do processo interno, nos dois modelos (empresa procura UFF / UFF procura instituição pública). | Passo a passo prometido pela Divisão. | PROGRAD |
 | D8 | Formato e qualidade das planilhas atuais (colunas, duplicatas). | — | PROGRAD envia cópia |
 | D9 | Exigências do SDC sobre guarda de documentos. | Aguardar participação do SDC. | SDC |
