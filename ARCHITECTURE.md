@@ -2,7 +2,7 @@
 
 ## 1. Arquitetura atual
 
-Código: esqueleto Django (Fase 0). `config/` guarda as configurações (todas lidas de variáveis de ambiente) e `core/` tem o `/health/`. Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
+Código: Django 5.2. `config/` guarda as configurações (todas lidas de variáveis de ambiente), `core/` tem o `/health/` e `convenios/` tem o modelo de concedente, convênio e etapas, o cadastro pelo admin e a validação de CPF/CNPJ (`documentos.py`). Os testes ficam em `tests/` e o pipeline em `tools/ci.py`.
 
 O processo de negócio hoje roda sobre:
 
@@ -48,15 +48,23 @@ erDiagram
   USUARIO ||--o{ AUDITORIA : faz
   CONCEDENTE {
     int id
-    string cnpj UK
+    string documento UK "CPF ou CNPJ, só caracteres"
     string razao_social
+    string nome_fantasia
     enum tipo "ver REQUIREMENTS RN05 (9 tipos)"
+    string uf
+    string cidade
+    string ramo_atividade "D12"
+    string email
   }
   CONVENIO {
     int id
     int concedente_id FK
-    string numero
+    string numero "PR-NNN/AAAA"
     string processo_sei
+    string resolucao_cep "nº da norma interna"
+    string resolucao_cep_url
+    text objeto
     enum minuta "padrao_uff|externa"
     enum origem "concedente_solicitou|uff_procurou"
     date inicio_vigencia
@@ -103,6 +111,9 @@ erDiagram
 | A1 | Banco relacional PostgreSQL | Proposta (consenso do brainstorming) |
 | A2 | Monólito com páginas server-side; SPA só se a interface exigir | Proposta |
 | A3 | Django 5.2 LTS (admin pronto cobre a interface interna do MVP; auth/ORM/migrações nativos) | Decidida em 06/10/2026 |
+| A7 | Sistema próprio; a Central de Estágios do SIGAA serve de referência de fluxo e vocabulário, sem dependência técnica (a UFF não tem acesso ao SIGAA) | Decidida em 06/10/2026 |
+| A8 | Histórico pelo `LogEntry` nativo do admin: quem, quando e quais campos mudaram, sem o valor anterior (D17) | Decidida em 06/10/2026 |
+| A9 | Permissão por grupo "Divisão de Estágio", criado por migração | Decidida em 06/10/2026 |
 | A6 | Ferramentas: uv, ruff, mypy strict, vulture, pip-audit, pytest-django; pipeline único em `tools/ci.py` | Decidida |
 | A4 | SEI permanece processo oficial; sistema guarda nº do processo | Provisória — D1 |
 | A5 | Status de vigência derivado de datas | Proposta |

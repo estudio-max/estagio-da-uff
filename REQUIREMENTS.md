@@ -31,14 +31,14 @@ Diretriz da reunião: **separar o "o quê" do "como"**. O "o quê" do processo a
 
 | ID | Requisito | Status |
 |---|---|---|
-| RF01 | Cadastrar convênio: concedente (razão social, CNPJ, tipo — ver RN05), nº do convênio, nº do processo SEI, modalidade de minuta (padrão UFF / externa), datas de início e fim de vigência, situação, observações internas. | Pendente |
-| RF02 | Registrar o andamento interno do processo (etapas: documentação recebida, análise, termo preparado, assinatura concedente, assinatura pró-reitor, ratificação, publicação do extrato no BS, finalizado). | Pendente |
+| RF01 | Cadastrar convênio: concedente (razão social, CNPJ, tipo — ver RN05), nº do convênio, nº do processo SEI, modalidade de minuta (padrão UFF / externa), datas de início e fim de vigência, situação, observações internas. | Implementado (1a) |
+| RF02 | Registrar o andamento interno do processo (etapas: documentação recebida, análise, termo preparado, assinatura concedente, assinatura pró-reitor, ratificação, publicação do extrato no BS, finalizado). | Implementado (1a) |
 | RF03 | Marcar, por campo, o que é público. Definição pela PROGRAD. | Pendente |
 | RF04 | Página pública com convênios vigentes, com busca por nome/CNPJ/tipo. Convênio entra na página automaticamente ao ser finalizado. | Pendente |
 | RF05 | Alertas de vencimento para a Divisão (e-mail e painel), com antecedências configuráveis. | Pendente |
 | RF06 | Painéis estratégicos: vigentes, encerrados/vencidos, vencendo em 30/90/180 dias, em tramitação, por tipo de concedente. Visibilidade (pública/privada) definida pela PROGRAD. | Pendente |
 | RF07 | Importar os dados atuais das planilhas (públicos e privados) e da página do site. | Pendente |
-| RF08 | Histórico de alterações de cada convênio (quem, quando, o quê). | Pendente |
+| RF08 | Histórico de alterações de cada convênio (quem, quando, o quê). | Implementado (1a) |
 
 ### Média prioridade — Fase 2 (entrada externa)
 
@@ -66,8 +66,10 @@ Aplicáveis ao MVP:
 
 - RN01 — Convênio aparece na página pública somente quando finalizado e com vigência em curso.
 - RN02 — Convênio com fim de vigência passado muda para "vencido" automaticamente (derivado da data, não editado à mão).
-- RN03 — CNPJ válido (dígito verificador) e único por concedente.
-- RN04 — Apenas a Divisão de Estágio escreve no MVP.
+- RN03 — CNPJ válido (dígito verificador) e único por concedente. Aceita o CNPJ alfanumérico da Receita (emitido desde julho de 2026).
+- RN04 — Apenas a Divisão de Estágio escreve no MVP (grupo "Divisão de Estágio"). Convênio e concedente não são excluídos: convênio errado vira "cancelado".
+- RN06 — Concedente identificada por CPF (pessoa física, ex.: profissional liberal) ou CNPJ, com dígito verificador validado. *Premissa, D14.*
+- RN07 — Vigência do convênio de no máximo 5 anos. *Premissa, D15.*
 - RN05 — Tipos de convênio (lista oficial do formulário atual da PROGRAD): Instituição de Ensino Privada; Empresa Privada; ONGs e OSCIPs; Órgãos dos Governos Federal, Estadual e Municipal; Profissional Liberal; Agente de Integração; Instituições de Ensino Públicas; Microempresas; Outros.
 
 Para fases futuras (fonte: Lei 11.788/2008 e páginas da PROGRAD — confirmar com a Divisão antes de implementar):
@@ -79,6 +81,79 @@ Para fases futuras (fonte: Lei 11.788/2008 e páginas da PROGRAD — confirmar c
 - Apólice de seguro obrigatória no TCE; no obrigatório sem apólice da empresa, usar apólice institucional.
 - Matrícula ativa como pré-condição para início e continuidade.
 - Convênio com minuta externa exige ratificação pelos Conselhos Superiores.
+
+## 4.1 Campos do convênio no sistema atual (estagio.uff.br, Drupal)
+
+Levantamento feito em 06/10/2026 a partir da página pública e do formulário "Editar Convenio". Ele descreve o sistema atual e não é uma decisão de modelo.
+
+| Campo atual | Na página pública | Observação |
+|---|---|---|
+| Title (nome da concedente) | sim (título) | |
+| Nº CONVÊNIO | sim | formato `PR-NNN/AAAA` |
+| INICIO DO CONVENIO | sim | entra como `dd.mm.aa` |
+| TÉRMINO CONVÊNIO | sim | entra como `dd/mm/aa` (formato diferente do início) |
+| NÚMERO DO PROCESSO | sim | formato SEI `23069.NNNNNN/AAAA-DV` |
+| ANO | sim | redundante com o nº do convênio e a data de início? |
+| UF | sim | taxonomia |
+| Cidade | sim | taxonomia |
+| Tipo da Instituição | sim | taxonomia; substituída pelos 9 tipos da RN05 (D11), com os valores antigos mapeados na importação |
+| Ramo de Atividade | sim | taxonomia, parece CNAE |
+| Objeto (textarea curta) | sim | quase sempre um texto padrão |
+| CNPJ | sim | entra sem máscara, a página exibe formatado |
+| Objeto (corpo HTML grande) | não | costuma ficar vazio |
+| PUBLICADO | não | status do convênio; substituído por `situacao` + vigência derivada (RN02) |
+| Resolução CEP | não | número e link da norma interna da UFF que autorizou o convênio |
+| Email | não | |
+
+## 4.2 Referência externa: Central de Estágios do SIGAA (UFOB)
+
+Fonte: guia do usuário v2.0 da UFOB (https://ufob.edu.br/acesso-a-informacao/convenios-e-transferencias/GuiaCentraldeEstgiosv.2.0.pdf). É o módulo de estágio do SIGAA, usado por várias federais. Lido em 06/10/2026. Nada aqui vale para a UFF sem confirmação da PROGRAD.
+
+| Ideia do SIGAA | Uso proposto aqui | Fase |
+|---|---|---|
+| Concedente pode ser **pessoa física (CPF)** ou jurídica (CNPJ); o profissional liberal entra com CPF | Documento da concedente aceita CPF ou CNPJ (D14) | 1a |
+| Vigência do convênio de no máximo 5 anos | Validação no cadastro (D15); o exemplo PR-212/2026 da UFF tem exatamente 5 anos | 1a |
+| Razão social + nome fantasia; endereço completo; telefones | Nome fantasia ajuda na busca pública; endereço completo só quando houver termo gerado | 1a / 2 |
+| Situações SUBMETIDO → RECUSADO (com motivo visível ao solicitante) → ANALISADO → APROVADO | Base da situação da solicitação externa | 2 |
+| Checklist de documentos e representante legal com cargo e email | Base do RF11 | 2 |
+| Âmbito nacional/internacional; flags agente de integração / órgão público | Avaliar com a PROGRAD | 2 |
+| Estágio só fica ATIVO depois do upload do TCE assinado | Regra de ativação na fase do TCE | 3 |
+| Aviso ao estudante 30 dias antes de completar 6 meses ou do fim | Regra de notificação dos relatórios | 3 |
+| Aditivo não pode deixar lacuna entre a vigência anterior e a nova | Validação do aditivo | 3 |
+| Certificado do supervisor ao fim do estágio | Funcionalidade candidata | 3+ |
+| Oferta de vagas pela concedente e/ou coordenação | Já previsto como futuro | 4 |
+
+## 4.3 Referência externa: início de estágio no SIGAA (UFRN)
+
+Fontes (06/10/2026): BPMN "Cadastramento de Estágio Obrigatório", "Tutorial para Pré-Cadastro de Estágio" (UFRN, 2021) e "Passo a Passo – Início de um Estágio" (SAIGAD/UFRN). Servem de base para a Fase 3 e não valem como regra da UFF sem confirmação.
+
+**Fluxo de referência (pré-cadastro → TCE ativo):**
+
+```mermaid
+stateDiagram-v2
+  [*] --> AguardandoAprovacao: estudante faz o pré-cadastro
+  AguardandoAprovacao --> AguardandoAprovacao: coordenação devolve para correção
+  AguardandoAprovacao --> AguardandoAssinatura: coordenação aprova e emite o TCE
+  AguardandoAssinatura --> Ativo: todas as partes assinam
+  Ativo --> [*]
+```
+
+Assinam o TCE: estudante, professor orientador, coordenação do curso, supervisor e responsável pela concedente ou pelo local. Na UFRN, a assinatura acontece no SIPAC (eletrônica) ou em papel.
+
+**Dados do pré-cadastro:** convênio (busca por nome, CNPJ, responsável ou número); tipo (obrigatório ou não obrigatório); carga horária semanal (≤ 30 h, ou ≤ 40 h se o curso alterna teoria e prática e o PPC prevê); valor da bolsa e do auxílio-transporte por dia (obrigatórios no estágio não obrigatório); professor orientador; **local de estágio** (CNPJ, nome e endereço da unidade) e setor; responsável pelo local; supervisor (formação na área ou experiência comprovada; pode ser cadastrado na hora); horários por dia, sem choque com as aulas; seguro (seguradora, apólice, valor e cópia; no obrigatório a universidade custeia); vigência; plano de atividades.
+
+**Pontos que afetam o nosso modelo:**
+- **Concedente não é o mesmo que local de estágio.** Exemplo: o convênio é com a Secretaria Estadual de Educação, e o estágio acontece numa escola. O estágio precisa dos dois.
+- Agentes de integração (CIEE, IEL...) são selecionados como o convênio do estágio não obrigatório.
+
+**Falhas do SIGAA que o nosso sistema deve evitar:**
+- A coordenação não recebe aviso de novo pré-cadastro; o estudante precisa mandar email.
+- SIGAA e SIPAC não se integram: o termo é baixado de um sistema e enviado ao outro à mão, nos dois sentidos.
+- Assinantes externos precisam se cadastrar antes no SIPAC (barreira de entrada; aqui seria o gov.br).
+- O estudante não sabe quem ainda falta assinar (a orientação é assinar por último para ver os pendentes).
+- É preciso pré-cadastrar com 10 dias de antecedência por causa dessa tramitação.
+
+**Guarda de documentos:** na UFRN, o TCE físico fica arquivado na coordenação por 52 anos. Perguntar ao SDC qual é o prazo na UFF (D9).
 
 ## 5. Requisitos não funcionais
 
@@ -116,4 +191,11 @@ TCE e ciclo do estágio, integração com sistema acadêmico, assinatura digital
 | D7 | Etapas exatas do processo interno, nos dois modelos (empresa procura UFF / UFF procura instituição pública). | Passo a passo prometido pela Divisão. | PROGRAD |
 | D8 | Formato e qualidade das planilhas atuais (colunas, duplicatas). | — | PROGRAD envia cópia |
 | D9 | Exigências do SDC sobre guarda de documentos. | Aguardar participação do SDC. | SDC |
+| D11 | ~~Qual vocabulário de tipo vale?~~ **Resolvida em 06/10/2026: os 9 tipos da RN05.** Falta a tabela de-para dos tipos do Drupal para a importação (1b). | — | PROGRAD |
+| D12 | Ramo de Atividade é o CNAE? | (a) CNAE oficial; (b) lista própria | PROGRAD |
+| D13 | ~~PUBLICADO e Resolução CEP~~ resolvidas em 06/10/2026 (ver 4.1). Pendente: o Objeto padrão pode virar o valor sugerido? A Resolução CEP é pública? | — | PROGRAD |
+| D14 | ~~CPF para profissional liberal?~~ **Premissa adotada em 06/10/2026:** concedente aceita CPF ou CNPJ, como no SIGAA (mesma legislação federal). Confirmar com a PROGRAD. | — | PROGRAD |
+| D15 | ~~Vigência máxima de 5 anos?~~ **Premissa adotada em 06/10/2026:** o cadastro bloqueia vigência acima de 5 anos. Confirmar com a PROGRAD. | — | PROGRAD |
+| D16 | ~~Adotar o SIGAA?~~ **Resolvida em 06/10/2026:** a UFF não tem acesso ao SIGAA. Seguimos com sistema próprio, usando a Central de Estágios do SIGAA como referência de fluxo (seção 4.2). | — | — |
+| D17 | O histórico (RF08) precisa mostrar o valor anterior de cada campo, ou basta saber quem mudou, quando e quais campos? | (a) basta o histórico nativo do admin (atual); (b) adotar django-simple-history | PROGRAD |
 | D10 | Credenciamento gov.br da UFF para login único (Fase 2) já existe? | — | STI |

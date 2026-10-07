@@ -1,11 +1,11 @@
 # STEPS — Sistema de Estágios UFF
 
-Estado em 06/10/2026: Fase 0 concluída (pipeline local verde). **Próxima: Fase 1a.**
+Estado em 06/10/2026: Fase 1a concluída (pipeline local verde). **Próxima: Fase 1b (importação), que depende das planilhas (D8).**
 
 | Fase | Objetivo | Status | Complexidade |
 |---|---|---|---|
 | 0 | Fundação | Concluída | Baixa |
-| 1 | Convênios internos + página pública + alertas + painéis (MVP) | Pendente | Média |
+| 1 | Convênios internos + página pública + alertas + painéis (MVP) | Em andamento (1a concluída) | Média |
 | 2 | Solicitação externa via gov.br | Pendente (depende D1, D10) | Média |
 | 3 | TCE e ciclo do estágio | Fora do escopo atual | Alta |
 | 4 | Assinatura gov.br, SEI, SDC, sistema acadêmico | Fora do escopo atual | Alta |
@@ -21,7 +21,7 @@ Estado em 06/10/2026: Fase 0 concluída (pipeline local verde). **Próxima: Fase
 
 Entregas em incrementos curtos, cada um mostrado na reunião semanal:
 
-1. **1a** — Modelo Concedente/Convênio/Etapa + interface interna de cadastro e edição + auditoria. (RF01, RF02, RF08)
+1. **1a** ✅ — Modelo Concedente/Convênio/Etapa + interface interna de cadastro e edição + auditoria. (RF01, RF02, RF08). App `convenios`; cadastro pelo admin do Django; grupo "Divisão de Estágio"; vigência derivada com filtro; CPF/CNPJ (inclusive alfanumérico) com máscara opcional; vigência de no máximo 5 anos. 45 testes, cobertura de 98%. Para a Divisão usar: adicionar o usuário (com `is_staff`) ao grupo.
 2. **1b** — Importação das planilhas. (RF07) — depende de D8.
 3. **1c** — Página pública com busca, só campos públicos. (RF03, RF04) — depende de D2.
 4. **1d** — Job diário de alertas. (RF05) — depende de D3.
@@ -38,5 +38,7 @@ Entregas em incrementos curtos, cada um mostrado na reunião semanal:
 - **Critério**: empresa solicita convênio sem conta no SEI; Divisão recebe documentação completa no sistema.
 
 ## Fases 3 e 4
+
+Insumo da Fase 3: o fluxo e as falhas do SIGAA levantados no REQUIREMENTS §4.3.
 
 Replanejar quando a Fase 2 estiver em produção, com SDC e coordenações participando.

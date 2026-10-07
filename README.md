@@ -15,6 +15,8 @@ DJANGO_DEBUG=1 uv run python manage.py createsuperuser
 DJANGO_DEBUG=1 uv run python manage.py runserver
 ```
 
+Para um usuário da Divisão de Estágio editar convênios no admin, ele precisa de `is_staff` e de estar no grupo "Divisão de Estágio".
+
 No PowerShell, defina antes `$env:DJANGO_DEBUG="1"`. Variáveis disponíveis: `.env.example`.
 
 ## Pipeline
@@ -29,7 +31,7 @@ uv run python tools/ci.py coverage        # cobertura (relatório em reports/)
 ```
 
 Etapas, na ordem: formatação (ruff), lint + segurança estática (ruff com regras bandit),
-tipos (mypy strict), código morto (vulture), vulnerabilidades em dependências (pip-audit),
+tipos (mypy strict), código morto (vulture), migração esquecida (`makemigrations --check`), vulnerabilidades em dependências (pip-audit),
 testes por categoria, cobertura mínima de 90%, `manage.py check --deploy`.
 Para na primeira etapa reprovada.
 

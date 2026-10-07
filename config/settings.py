@@ -4,7 +4,11 @@ import os
 import sys
 from pathlib import Path
 
+import django_stubs_ext
 from django.core.exceptions import ImproperlyConfigured
+
+# Permite ModelAdmin[Model] etc. em tempo de execução (tipagem estrita do mypy).
+django_stubs_ext.monkeypatch()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,6 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "core",
+    "convenios",
 ]
 
 MIDDLEWARE = [
